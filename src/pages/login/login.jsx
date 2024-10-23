@@ -1,6 +1,8 @@
 import "./login.css";
 import { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +21,7 @@ export default function Login() {
 
         console.log(token);
 
-        if (res.data.user.type == "admin") {
+        if (res.data.user.type === "admin") {
           window.location.href = "/admin";
         } else {
           window.location.href = "/";
@@ -33,33 +35,55 @@ export default function Login() {
   return (
     <div className="w-full h-[100vh] pic-bg flex justify-center items-center">
       <div className="w-[400px] h-[400px] backdrop-blur-md rounded-lg flex flex-col items-center justify-center relative">
-        <h1 className="text-3xl p-[15px] text-white absolute top-[40px] text-center">
+        <h1 className="text-3xl p-[15px] font-bold text-white absolute top-[10px] text-center">
           Login
         </h1>
-        <input
-          type="text"
-          placeholder="Enter your email address"
-          className="w-[80%] bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px] mb-[20px]"
-          defaultValue={email}
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-        ></input>
-        <input
-          type="password"
-          placeholder="Enter your password"
-          className="w-[80%] bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px]"
-          defaultValue={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        ></input>
+
+        <div className="w-[80%] flex flex-col mb-[10px]">
+          <label className="text-white mb-[5px]" htmlFor="email">
+            Email Address
+          </label>
+          <input
+            id="email"
+            type="text"
+            placeholder="Enter your email address"
+            className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px]"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
+          />
+        </div>
+
+        <div className="w-[80%] flex flex-col mb-[70px]">
+          <label className="text-white mb-[5px]" htmlFor="password">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+            className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px]"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+        </div>
+
         <button
-          className="w-[80%] absolute bottom-[40px] bg-red-500 h-[50px] text-white rounded-lg font-bold p-[15px] hover:bg-red-700 transition-all duration-300"
+          className="w-[80%] absolute bottom-[70px] bg-red-500 h-[50px] text-white rounded-lg font-bold p-[15px] hover:bg-red-700 transition-all duration-300"
           onClick={handleLogin}
         >
           Login
         </button>
+
+        <Link to="/register" className="absolute bottom-[20px] text-white ">
+          Don't have an account?{" "}
+          <span className="hover:text-red-500 font-bold transition-colors duration-300">
+            SIGN UP
+          </span>
+        </Link>
       </div>
     </div>
   );
