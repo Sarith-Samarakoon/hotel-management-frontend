@@ -2,6 +2,7 @@ import "./login.css";
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { AiOutlineMail, AiOutlineLock, AiOutlineLogin } from "react-icons/ai"; // Import icons
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -34,7 +35,7 @@ export default function Login() {
 
   return (
     <div className="w-full h-[100vh] pic-bg flex justify-center items-center">
-      <div className="w-[400px] h-[400px] backdrop-blur-md rounded-lg flex flex-col items-center justify-center relative">
+      <div className="w-[400px] h-[450px] backdrop-blur-md rounded-lg flex flex-col items-center justify-center relative">
         <h1 className="text-3xl p-[15px] font-bold text-white absolute top-[10px] text-center">
           Login
         </h1>
@@ -43,36 +44,48 @@ export default function Login() {
           <label className="text-white mb-[5px]" htmlFor="email">
             Email Address
           </label>
-          <input
-            id="email"
-            type="text"
-            placeholder="Enter your email address"
-            className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px]"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
+          <div className="relative w-full">
+            <AiOutlineMail
+              className="absolute left-3 top-[15px] text-white"
+              size={24}
+            />
+            <input
+              id="email"
+              type="text"
+              placeholder="Enter your email address"
+              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]" // Space for icon
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            />
+          </div>
         </div>
 
         <div className="w-[80%] flex flex-col mb-[70px]">
           <label className="text-white mb-[5px]" htmlFor="password">
             Password
           </label>
-          <input
-            id="password"
-            type="password"
-            placeholder="Enter your password"
-            className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px]"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
+          <div className="relative w-full">
+            <AiOutlineLock
+              className="absolute left-3 top-[15px] text-white"
+              size={24}
+            />
+            <input
+              id="password"
+              type="password"
+              placeholder="Enter your password"
+              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]" // Space for icon
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+          </div>
         </div>
 
         <button
-          className="w-[80%] absolute bottom-[70px] bg-red-500 h-[50px] text-white rounded-lg font-bold p-[15px] hover:bg-red-700 transition-all duration-300"
+          className="w-[80%] absolute bottom-[70px] bg-red-500 h-[50px] text-white rounded-lg font-bold p-[15px] hover:bg-red-700 transition-all duration-300 flex items-center justify-center"
           onClick={handleLogin}
         >
           Login

@@ -2,6 +2,14 @@ import "./login.css";
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import {
+  AiOutlineMail,
+  AiOutlineLock,
+  AiOutlineUser,
+  AiOutlineWhatsApp,
+  AiOutlinePhone,
+  AiOutlineTeam,
+} from "react-icons/ai";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -54,84 +62,136 @@ export default function Login() {
           Sign Up
         </h1>
         <div className="w-[80%] flex flex-col space-y-[10px] mb-[70px]">
+          {/* Email input with icon */}
           <label className="text-white text-sm">Email Address</label>
-          <input
-            type="text"
-            placeholder="Enter your email address"
-            className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px]"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
-          />
+          <div className="relative w-full">
+            <AiOutlineMail
+              className="absolute left-3 top-[15px] text-white"
+              size={24}
+            />
+            <input
+              type="text"
+              placeholder="Enter your email address"
+              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]" // Adjust for icon
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            />
+          </div>
 
+          {/* Password input with icon */}
           <label className="text-white text-sm">Password</label>
-          <input
-            type="password"
-            placeholder="Enter your password"
-            className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px]"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />
+          <div className="relative w-full">
+            <AiOutlineLock
+              className="absolute left-3 top-[15px] text-white"
+              size={24}
+            />
+            <input
+              type="password"
+              placeholder="Enter your password"
+              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+          </div>
 
+          {/* First name input with icon */}
           <label className="text-white text-sm">First Name</label>
-          <input
-            type="text"
-            placeholder="Enter your first name"
-            className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px]"
-            value={firstName}
-            onChange={(e) => {
-              setFirstName(e.target.value);
-            }}
-          />
+          <div className="relative w-full">
+            <AiOutlineUser
+              className="absolute left-3 top-[15px] text-white"
+              size={24}
+            />
+            <input
+              type="text"
+              placeholder="Enter your first name"
+              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]"
+              value={firstName}
+              onChange={(e) => {
+                setFirstName(e.target.value);
+              }}
+            />
+          </div>
 
+          {/* Last name input with icon */}
           <label className="text-white text-sm">Last Name</label>
-          <input
-            type="text"
-            placeholder="Enter your last name"
-            className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px]"
-            value={lastName}
-            onChange={(e) => {
-              setLastName(e.target.value);
-            }}
-          />
+          <div className="relative w-full">
+            <AiOutlineUser
+              className="absolute left-3 top-[15px] text-white"
+              size={24}
+            />
+            <input
+              type="text"
+              placeholder="Enter your last name"
+              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]"
+              value={lastName}
+              onChange={(e) => {
+                setLastName(e.target.value);
+              }}
+            />
+          </div>
 
+          {/* WhatsApp input with icon */}
           <label className="text-white text-sm">WhatsApp Number</label>
-          <input
-            type="text"
-            placeholder="Enter your WhatsApp number"
-            className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px]"
-            value={whatsApp}
-            onChange={(e) => {
-              setWhatsApp(e.target.value);
-            }}
-          />
+          <div className="relative w-full">
+            <AiOutlineWhatsApp
+              className="absolute left-3 top-[15px] text-white"
+              size={24}
+            />
+            <input
+              type="text"
+              placeholder="Enter your WhatsApp number"
+              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]"
+              value={whatsApp}
+              onChange={(e) => {
+                setWhatsApp(e.target.value);
+              }}
+            />
+          </div>
 
+          {/* Phone input with icon */}
           <label className="text-white text-sm">Phone Number</label>
-          <input
-            type="text"
-            placeholder="Enter your phone number"
-            className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px]"
-            value={phone}
-            onChange={(e) => {
-              setPhone(e.target.value);
-            }}
-          />
+          <div className="relative w-full">
+            <AiOutlinePhone
+              className="absolute left-3 top-[15px] text-white"
+              size={24}
+            />
+            <input
+              type="text"
+              placeholder="Enter your phone number"
+              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]"
+              value={phone}
+              onChange={(e) => {
+                setPhone(e.target.value);
+              }}
+            />
+          </div>
 
-          {/* Dropdown for selecting type */}
+          {/* User type dropdown with icon */}
           <label className="text-white text-sm">User Type</label>
-          <select
-            className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[5px]"
-            value={type}
-            onChange={(e) => {
-              setType(e.target.value);
-            }}
-          >
-            <option value="customer">Customer</option>
-            <option value="admin">Admin</option>
-          </select>
+          <div className="relative w-full">
+            <AiOutlineTeam
+              className="absolute left-3 top-[15px] text-white"
+              size={24}
+            />
+            <select
+              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]"
+              value={type}
+              onChange={(e) => {
+                setType(e.target.value);
+              }}
+            >
+              <option className="text-black font-bold" value="customer">
+                Customer
+              </option>
+              <option className="text-black font-bold" value="admin">
+                Admin
+              </option>
+            </select>
+          </div>
         </div>
 
         <button
@@ -141,7 +201,6 @@ export default function Login() {
           Sign Up
         </button>
 
-        {/* Add a link to the login page */}
         <Link to="/login" className="absolute bottom-[20px] text-white ">
           Already have an account?{" "}
           <span className="hover:text-red-500 font-bold transition-colors duration-300">
