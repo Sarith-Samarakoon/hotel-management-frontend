@@ -7,6 +7,8 @@ import AdminRooms from "../admin/Rooms/rooms";
 import AdminUsers from "../admin/Users/users";
 import AddCategoryForm from "../admin/Categories/addCategoryForm";
 import UpdateCategoryForm from "../admin/Categories/updateCategory";
+import AddGalleryItemForm from "../admin/GalleryItem/AddGalleryItemForm";
+import UpdateGalleryItemForm from "../admin/GalleryItem/UpdateGalleryForm";
 import { Link } from "react-router-dom";
 import { CiBookmarkCheck } from "react-icons/ci";
 import { MdOutlineCategory } from "react-icons/md";
@@ -69,6 +71,11 @@ export default function AdminPage() {
           <Route path="/user" element={<AdminUsers />} />
           <Route path="/feedback" element={<AdminFeedback />} />
           <Route path="/gallery-item" element={<AdminGalleryItems />} />
+          <Route path="/add-gallery-item" element={<AddGalleryItemForm />} />
+          <Route
+            path="/update-gallery-item"
+            element={<UpdateGalleryItemForm />}
+          />
         </Routes>
       </div>
     </div>
