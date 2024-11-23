@@ -27,7 +27,10 @@ function UserTag(props) {
   }, [userFound]);
   return (
     <div className="absolute right-0 flex items-center cursor-pointer mr-2">
-      <img src={props.imageLink} className="rounded-full w-[75px] h-[75px] " />
+      <img
+        src={props.imageLink}
+        className="rounded-full w-[40px] h-[40px] lg:w-[60px] lg:h-[60px]"
+      />
       <span className="text-white ml-[5px] text-xl ">{name}</span>
       <button
         onClick={() => {

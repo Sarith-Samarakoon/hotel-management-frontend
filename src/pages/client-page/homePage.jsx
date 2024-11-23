@@ -4,7 +4,13 @@ export default function HomePage() {
     <>
       <Header />
       <div className="w-full h-screen bg-blue-900 flex flex-col items-center">
-        <div className="w-[700px] h-[100px] border border-white bg-white rounded-lg flex justify-center items-center">
+        <h1 className="text-white text-[50px] w-full text-center hidden lg:block">
+          Welcome to the Leonine Villa
+        </h1>
+        <h1 className="text-white text-[50px] w-full text-center lg:hidden">
+          Welcome to the Sri Lanka
+        </h1>
+        <div className="px-[10px] py-[20px] mt-[20px]  border border-white bg-white rounded-lg flex justify-center items-center">
           <input type="date" />
 
           <input type="date" />
@@ -17,7 +23,6 @@ export default function HomePage() {
           </select>
           <button>Book Now</button>
         </div>
-        <h1 className="text-white text-[50px]">Welcome to the Leonine Villa</h1>
       </div>
     </>
   );

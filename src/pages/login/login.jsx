@@ -2,34 +2,61 @@ import "./login.css";
 import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { AiOutlineMail, AiOutlineLock, AiOutlineLogin } from "react-icons/ai"; // Import icons
+import { AiOutlineMail, AiOutlineLock, AiOutlineLogin } from "react-icons/ai";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   function handleLogin() {
+    // Validate input
+    if (!email || !password) {
+      toast.error("Please enter both email and password!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    setIsLoading(true);
+
     axios
-      .post(import.meta.env.VITE_BACKEND_URL + "/api/users/login", {
+      .post(`${import.meta.env.VITE_BACKEND_URL}/api/users/login`, {
         email: email,
         password: password,
       })
       .then((res) => {
-        console.log(res);
         localStorage.setItem("token", res.data.token);
 
         const token = localStorage.getItem("token");
+        console.log("Token:", token);
 
-        console.log(token);
-
+        // Redirect based on user type
         if (res.data.user.type === "admin") {
           window.location.href = "/admin";
         } else {
           window.location.href = "/";
         }
+
+        toast.success("Login successful!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
       })
       .catch((err) => {
-        console.log(err);
+        console.error("Login error:", err.response?.data || err.message);
+        toast.error(
+          err.response?.data?.message || "Failed to login. Try again!",
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }
 
@@ -51,13 +78,11 @@ export default function Login() {
             />
             <input
               id="email"
-              type="text"
+              type="email"
               placeholder="Enter your email address"
-              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]" // Space for icon
+              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]"
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
         </div>
@@ -75,11 +100,9 @@ export default function Login() {
               id="password"
               type="password"
               placeholder="Enter your password"
-              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]" // Space for icon
+              className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]"
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-              }}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
         </div>
@@ -87,11 +110,16 @@ export default function Login() {
         <button
           className="w-[80%] absolute bottom-[70px] bg-red-500 h-[50px] text-white rounded-lg font-bold p-[15px] hover:bg-red-700 transition-all duration-300 flex items-center justify-center"
           onClick={handleLogin}
+          disabled={isLoading}
         >
-          Login
+          {isLoading ? (
+            <div className="border-t-2 border-t-white w-[20px] min-h-[20px] rounded-full animate-spin"></div>
+          ) : (
+            "Login"
+          )}
         </button>
 
-        <Link to="/register" className="absolute bottom-[20px] text-white ">
+        <Link to="/register" className="absolute bottom-[20px] text-white">
           Don't have an account?{" "}
           <span className="hover:text-red-500 font-bold transition-colors duration-300">
             SIGN UP
