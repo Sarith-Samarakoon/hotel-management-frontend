@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { FaTrash, FaEdit, FaPlus } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function AdminCategories() {
   const token = localStorage.getItem("token");
@@ -47,7 +47,6 @@ export default function AdminCategories() {
   }
 
   function handlePlusClick() {
-    // window.location.href = "/admin/add-category";
     navigate("/admin/add-category");
   }
 
@@ -110,12 +109,13 @@ export default function AdminCategories() {
                   >
                     <FaTrash className="mr-2" /> Delete
                   </button>
-                  <button
-                    onClick={() => {}}
+                  <Link
                     className="bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 flex items-center"
+                    to={"/admin/update-category"}
+                    state={category}
                   >
                     <FaEdit className="mr-2" /> Edit
-                  </button>
+                  </Link>
                 </td>
               </tr>
             ))}

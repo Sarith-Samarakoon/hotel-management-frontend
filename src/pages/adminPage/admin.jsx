@@ -6,6 +6,7 @@ import AdminFeedback from "../admin/Feedback/feedback";
 import AdminRooms from "../admin/Rooms/rooms";
 import AdminUsers from "../admin/Users/users";
 import AddCategoryForm from "../admin/Categories/addCategoryForm";
+import UpdateCategoryForm from "../admin/Categories/updateCategory";
 import { Link } from "react-router-dom";
 import { CiBookmarkCheck } from "react-icons/ci";
 import { MdOutlineCategory } from "react-icons/md";
@@ -63,6 +64,7 @@ export default function AdminPage() {
           <Route path="/booking" element={<AdminBooking />} />
           <Route path="/category" element={<AdminCategories />} />
           <Route path="/add-category" element={<AddCategoryForm />} />
+          <Route path="/update-category" element={<UpdateCategoryForm />} />
           <Route path="/room" element={<AdminRooms />} />
           <Route path="/user" element={<AdminUsers />} />
           <Route path="/feedback" element={<AdminFeedback />} />

@@ -6,11 +6,14 @@ import TestComponent from "./components/test/test";
 import LoginPage from "./pages/login/login";
 import RegisterPage from "./pages/login/register";
 import { Toaster } from "react-hot-toast";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <>
       <BrowserRouter>
         <Toaster position="top-right" reverseOrder={false} />
+        <ToastContainer position="top-right" reverseOrder={false} />
         <Routes path="/">
           <Route path="/*" element={<HomePage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>

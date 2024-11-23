@@ -3,13 +3,19 @@ import uploadMedia from "../../../utils/mediaUpload";
 import { getDownloadURL } from "firebase/storage";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 
-export default function AddCategoryForm() {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [features, setFeatures] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
+export default function UpdateCategoryForm() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  if (location.state == null) {
+    window.location.href = "/admin/category";
+  }
+  const [name, setName] = useState(location.state.name);
+  const [price, setPrice] = useState(location.state.price);
+  const [features, setFeatures] = useState(location.state.features.join(","));
+  const [description, setDescription] = useState(location.state.description);
+  const [image, setImage] = useState(location.state.image);
   const [isLoading, setIsLoading] = useState(false);
 
   const token = localStorage.getItem("token");
@@ -19,7 +25,7 @@ export default function AddCategoryForm() {
 
   //   const handleSubmit = (e) => {
   //     e.preventDefault();
-  //   setIsLoading(true);
+  //     setIsLoading(true);
   //     // Form submission logic here
   //     console.log({
   //       name,
@@ -29,19 +35,50 @@ export default function AddCategoryForm() {
   //       image,
   //     });
   //     const featuresArray = features.split(",");
+  //     if (image == null) {
+  //       const categoryInfo = {
+  //         price: price,
+  //         features: featuresArray,
+  //         description: description,
+  //         image: location.state.image,
+  //       };
+  //       axios
+  //         .put(
+  //           import.meta.env.VITE_BACKEND_URL + "/api/category/" + name,
+  //           categoryInfo,
+  //           {
+  //             headers: {
+  //               Authorization: "Bearer " + token,
+  //             },
+  //           }
+  //         )
+  //         .then((res) => {
+  //           console.log(res);
+  //           setIsLoading(true);
+  //           toast.success("Category updated successfully!", {
+  //             position: "top-right",
+  //             autoClose: 3000, // Close after 3 seconds
+  //             hideProgressBar: false,
+  //             closeOnClick: true,
+  //             pauseOnHover: true,
+  //             draggable: true,
+  //             progress: undefined,
+  //           });
+  //           navigate("/admin/category");
+  //         });
+  //     }else{
   //     uploadMedia(image).then((snapshot) => {
   //       getDownloadURL(snapshot.ref).then((url) => {
   //         console.log("File uploaded successfully:", url);
   //         const categoryInfo = {
-  //           name: name,
   //           price: price,
   //           features: featuresArray,
   //           description: description,
+  //           image: url,
   //         };
-
   //         axios
-  //           .post(
-  //             import.meta.env.VITE_BACKEND_URL + "/api/category",
+  //           .put(
+  //             import.meta.env.VITE_BACKEND_URL + "/api/category/" + name,
   //             categoryInfo,
   //             {
   //               headers: {
@@ -51,23 +88,30 @@ export default function AddCategoryForm() {
   //           )
   //           .then((res) => {
   //             console.log(res);
+  //             setIsLoading(true);
+  //             toast.success("Category updated successfully!", {
+  //               position: "top-right",
+  //               autoClose: 3000, // Close after 3 seconds
+  //               hideProgressBar: false,
+  //               closeOnClick: true,
+  //               pauseOnHover: true,
+  //               draggable: true,
+  //               progress: undefined,
+  //             });
+  //             navigate("/admin/category");
   //           });
   //       });
   //     });
+  //   }
   //   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true); // Start loading
-
-    // Introduce a delay using setTimeout
+    setIsLoading(true);
     setTimeout(() => {
-      // Convert features to an array
       const featuresArray = features.split(",");
 
-      // Construct the category information object
       const categoryInfo = {
-        name: name,
         price: price,
         features: featuresArray,
         description: description,
@@ -75,8 +119,8 @@ export default function AddCategoryForm() {
       };
 
       axios
-        .post(
-          import.meta.env.VITE_BACKEND_URL + "/api/category",
+        .put(
+          import.meta.env.VITE_BACKEND_URL + "/api/category/" + name,
           categoryInfo,
           {
             headers: {
@@ -85,32 +129,27 @@ export default function AddCategoryForm() {
           }
         )
         .then((res) => {
-          console.log("Category created successfully:", res.data);
-          setIsLoading(false); // Stop loading
-          // Show success toast
+          console.log("Category updated successfully:", res.data);
+          setIsLoading(false);
           toast.success("Category created successfully!", {
             position: "top-right",
-            autoClose: 3000, // Close after 3 seconds
+            autoClose: 2000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
           });
-          // Optional: Reset the form fields
-          setName("");
-          setPrice(0);
-          setFeatures("");
-          setDescription("");
-          setImage("");
+          setTimeout(() => {
+            navigate("/admin/category");
+          }, 2000);
         })
         .catch((err) => {
           console.error("Error creating category:", err.message);
-          setIsLoading(false); // Stop loading on error
-          // Show error toast
+          setIsLoading(false);
           toast.error("Error creating category!", {
             position: "top-right",
-            autoClose: 3000,
+            autoClose: 2000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -127,7 +166,7 @@ export default function AddCategoryForm() {
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-4"
       >
-        <h1 className="text-2xl font-bold mb-4">Add New Category</h1>
+        <h1 className="text-2xl font-bold mb-4">Update Category</h1>
 
         {/* Category Name */}
         <div>
@@ -138,6 +177,8 @@ export default function AddCategoryForm() {
             onChange={(e) => setName(e.target.value)}
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter category name"
+            required
+            disabled
           />
         </div>
 
@@ -150,6 +191,7 @@ export default function AddCategoryForm() {
             onChange={(e) => setPrice(Number(e.target.value))}
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter price"
+            required
           />
         </div>
 
@@ -162,6 +204,7 @@ export default function AddCategoryForm() {
             onChange={(e) => setFeatures(e.target.value)}
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter features (comma-separated)"
+            required
           />
         </div>
 
@@ -173,6 +216,7 @@ export default function AddCategoryForm() {
             onChange={(e) => setDescription(e.target.value)}
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter description"
+            required
           />
         </div>
 
@@ -207,7 +251,7 @@ export default function AddCategoryForm() {
           {isLoading ? (
             <div className="border-t-2 border-t-white w-[20px] min-h-[20px] rounded-full animate-spin"></div>
           ) : (
-            <span>Add Category</span>
+            <span>Update Category</span>
           )}
         </button>
       </form>
