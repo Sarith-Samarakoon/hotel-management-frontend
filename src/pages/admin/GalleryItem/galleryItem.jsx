@@ -3,6 +3,8 @@ import axios from "axios";
 import { FaTrash, FaEdit, FaPlus } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 export default function AdminGalleryItems() {
   const token = localStorage.getItem("token");
@@ -30,20 +32,38 @@ export default function AdminGalleryItems() {
   }, [isLoaded]);
 
   function deleteGalleryItem(id) {
-    axios
-      .delete(import.meta.env.VITE_BACKEND_URL + "/api/gallery/" + id, {
-        headers: {
-          Authorization: "Bearer " + token,
+    confirmAlert({
+      title: "Confirm Deletion",
+      message:
+        "Are you sure you want to delete this gallery item? This action cannot be undone.",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            axios
+              .delete(import.meta.env.VITE_BACKEND_URL + "/api/gallery/" + id, {
+                headers: {
+                  Authorization: "Bearer " + token,
+                },
+              })
+              .then(() => {
+                setIsLoaded(false);
+                toast.success("Gallery item has been deleted successfully!");
+              })
+              .catch((err) => {
+                console.error("Error deleting gallery item:", err.message);
+                toast.error("Error deleting gallery item!");
+              });
+          },
         },
-      })
-      .then(() => {
-        setIsLoaded(false);
-        toast.success("Galley item has been deleted successfully!");
-      })
-      .catch((err) => {
-        console.error("Error deleting gallery item:", err.message);
-        toast.error("Error deleting gallery item!");
-      });
+        {
+          label: "No",
+          onClick: () => {
+            // Do nothing when No is clicked
+          },
+        },
+      ],
+    });
   }
 
   const handlePlusClick = () => {
@@ -59,7 +79,7 @@ export default function AdminGalleryItems() {
         <FaPlus color="white" />
       </button>
       <div className="p-4">
-        <h1 className="text-3xl font-semibold mb-6 text-white">
+        <h1 className="text-4xl font-extrabold mb-8  tracking-wide leading-snug shadow-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black text-white px-8 py-4 rounded-full w-[480px]">
           Gallery Items
         </h1>
         <table className="min-w-full bg-white rounded-lg shadow-lg overflow-hidden">
@@ -92,7 +112,7 @@ export default function AdminGalleryItems() {
                 <td className="py-4 px-6 border-b text-gray-700">
                   {item.description}
                 </td>
-                <td className="py-4 px-6 border-b text-gray-700 flex space-x-2">
+                <td className="py-4 px-6 border-b text-gray-700 flex space-x-2 mt-6">
                   <button
                     onClick={() => deleteGalleryItem(item._id)}
                     className="bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 flex items-center"

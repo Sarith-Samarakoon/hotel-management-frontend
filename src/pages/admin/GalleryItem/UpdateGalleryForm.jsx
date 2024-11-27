@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { uploadMediaToSupabase, supabase } from "../../../utils/mediaUpload";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -26,55 +27,87 @@ export default function UpdateGalleryItemForm() {
     e.preventDefault();
     setIsLoading(true);
 
-    const galleryItemInfo = {
-      name: name,
-      description: description,
-      image: image,
-    };
-
-    // Simulate loading delay
     setTimeout(() => {
-      axios
-        .put(
-          `${import.meta.env.VITE_BACKEND_URL}/api/gallery/${
-            location.state._id
-          }`,
-          galleryItemInfo,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((res) => {
-          console.log("Gallery item updated successfully:", res.data);
-          setIsLoading(false);
-          toast.success("Gallery item updated successfully!", {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
+      // Prepare the gallery item info with the existing image by default
+      const galleryItemInfo = {
+        name: name,
+        description: description,
+        image: location.state.image, // Default to the existing image
+      };
+
+      // Check if a new image is uploaded
+      if (image && typeof image === "object" && image.name) {
+        // Upload the new image to Supabase
+        uploadMediaToSupabase(image)
+          .then(() => {
+            // Retrieve the public URL of the uploaded image
+            const { data, error } = supabase.storage
+              .from("Images")
+              .getPublicUrl(image.name);
+
+            if (error) {
+              throw new Error("Failed to get public URL for the image");
+            }
+
+            // Update the image URL in the gallery item info
+            galleryItemInfo.image = data.publicUrl;
+
+            // Send updated gallery item info to the backend
+            return axios.put(
+              `${import.meta.env.VITE_BACKEND_URL}/api/gallery/${
+                location.state._id
+              }`,
+              galleryItemInfo,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+          })
+          .then((res) => {
+            console.log("Gallery item updated successfully:", res.data);
+            toast.success("Gallery item updated successfully!");
+            setTimeout(() => {
+              navigate("/admin/gallery-item");
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error("Error updating gallery item:", err.message);
+            toast.error("Error updating gallery item!");
+          })
+          .finally(() => {
+            setIsLoading(false);
           });
-          setTimeout(() => {
-            navigate("/admin/gallery-item");
-          }, 2000);
-        })
-        .catch((err) => {
-          console.error("Error updating gallery item:", err.message);
-          setIsLoading(false);
-          toast.error("Error updating gallery item!", {
-            position: "top-right",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
+      } else {
+        // If no new image is uploaded, only update the other details
+        axios
+          .put(
+            `${import.meta.env.VITE_BACKEND_URL}/api/gallery/${
+              location.state._id
+            }`,
+            galleryItemInfo,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then((res) => {
+            console.log("Gallery item updated successfully:", res.data);
+            toast.success("Gallery item updated successfully!");
+            setTimeout(() => {
+              navigate("/admin/gallery-item");
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error("Error updating gallery item:", err.message);
+            toast.error("Error updating gallery item!");
+          })
+          .finally(() => {
+            setIsLoading(false);
           });
-        });
+      }
     }, 1000);
   };
 
@@ -111,16 +144,13 @@ export default function UpdateGalleryItemForm() {
           ></textarea>
         </div>
 
-        {/* Image URL */}
+        {/* Image */}
         <div>
-          <label className="block font-medium mb-1">Image URL</label>
+          <label className="block font-medium mb-1">Image</label>
           <input
-            type="text"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
+            type="file"
+            onChange={(e) => setImage(e.target.files[0])}
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter image URL"
-            required
           />
         </div>
 

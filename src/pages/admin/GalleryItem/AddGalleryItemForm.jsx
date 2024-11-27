@@ -1,6 +1,5 @@
 import { useState } from "react";
-import uploadMedia from "../../../utils/mediaUpload.js";
-import { getDownloadURL } from "firebase/storage";
+import { uploadMediaToSupabase, supabase } from "../../../utils/mediaUpload";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -18,97 +17,74 @@ export default function AddGalleryItemForm() {
     window.location.href = "/login";
   }
 
-  //   const handleImageChange = (e) => {
-  //     setImage(e.target.files[0]);
-  //   };
-
-  //   function handleSubmit(e) {
-  //     e.preventDefault();
-  //     setIsLoading(true);
-
-  //     uploadMedia(image)
-  //       .then((snapshot) => {
-  //         getDownloadURL(snapshot.ref).then((url) => {
-  //           const galleryItemInfo = {
-  //             name: name,
-  //             description: description,
-  //             image: url,
-  //           };
-
-  //           axios
-  //             .post(
-  //               import.meta.env.VITE_BACKEND_URL + "/api/gallery",
-  //               galleryItemInfo,
-  //               {
-  //                 headers: {
-  //                   Authorization: "Bearer " + token,
-  //                 },
-  //               }
-  //             )
-  //             .then((res) => {
-  //               console.log(res);
-  //               setIsLoading(false);
-  //               navigate("/admin/gallery-items"); // Redirect to gallery page after adding item
-  //             })
-  //             .catch((err) => {
-  //               console.error("Error adding gallery item:", err);
-  //               setIsLoading(false);
-  //             });
-  //         });
-  //       })
-  //       .catch((err) => {
-  //         console.error("Error uploading image:", err);
-  //         setIsLoading(false);
-  //       });
-  //   }
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
 
   function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
 
     setTimeout(() => {
-      const galleryItemInfo = {
-        item: {
-          name: name,
-          description: description,
-          image: image,
-        },
-      };
+      // Upload the image to Supabase
+      uploadMediaToSupabase(image)
+        .then(() => {
+          // Retrieve the public URL of the uploaded image
+          const { data, error } = supabase.storage
+            .from("Images")
+            .getPublicUrl(image.name);
 
-      console.log("Gallery Item Info:", galleryItemInfo); // Debug API payload
-
-      axios
-        .post(
-          import.meta.env.VITE_BACKEND_URL + "/api/gallery/",
-          galleryItemInfo,
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
+          if (error) {
+            throw new Error("Failed to get public URL for the image");
           }
-        )
+
+          const publicUrl = data.publicUrl;
+          console.log("Uploaded image public URL:", publicUrl); // Debug log
+
+          // Prepare the gallery item info payload
+          const galleryItemInfo = {
+            item: {
+              name: name,
+              description: description,
+              image: publicUrl,
+            },
+          };
+
+          // Send the gallery item info to the backend
+          return axios.post(
+            import.meta.env.VITE_BACKEND_URL + "/api/gallery",
+            galleryItemInfo,
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            }
+          );
+        })
         .then((res) => {
           console.log("Gallery item added successfully:", res.data);
-          setIsLoading(false);
-          setTimeout(() => {
-            navigate("/admin/gallery-item");
-          }, 3000);
+          setIsLoading(false); // Stop loading
+          // Show success toast
           toast.success("Gallery item added successfully!", {
             position: "top-right",
-            autoClose: 2000, // Close after 3 seconds
+            autoClose: 3000, // Close after 3 seconds
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
           });
+          setTimeout(() => {
+            navigate("/admin/gallery-item"); // Redirect to gallery items page
+          }, 2000);
         })
         .catch((err) => {
           console.error("Error adding gallery item:", err.message);
-          setIsLoading(false);
+          setIsLoading(false); // Stop loading on error
+          // Show error toast
           toast.error("Error adding gallery item!", {
             position: "top-right",
-            autoClose: 2000, // Close after 3 seconds
+            autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
@@ -116,7 +92,7 @@ export default function AddGalleryItemForm() {
             progress: undefined,
           });
         });
-    }, 2000);
+    }, 1000);
   }
 
   return (
@@ -146,24 +122,12 @@ export default function AddGalleryItemForm() {
           />
         </div>
 
-        {/* <div>
+        <div>
           <label className="block text-gray-700">Image:</label>
           <input
             type="file"
             onChange={handleImageChange}
-            className="w-full px-4 py-2 mt-1"
-            required
-          />
-        </div> */}
-
-        <div className="mt-4">
-          <label className="block text-gray-700">Image URL:</label>
-          <input
-            type="text"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
             className="w-full px-4 py-2 mt-1 border rounded-lg"
-            placeholder="Enter image URL"
             required
           />
         </div>

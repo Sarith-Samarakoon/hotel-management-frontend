@@ -1,6 +1,5 @@
 import { useState } from "react";
-import uploadMedia from "../../../utils/mediaUpload";
-import { getDownloadURL } from "firebase/storage";
+import { uploadMediaToSupabase, supabase } from "../../../utils/mediaUpload";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -17,73 +16,47 @@ export default function AddCategoryForm() {
     window.location.href = "/login";
   }
 
-  //   const handleSubmit = (e) => {
-  //     e.preventDefault();
-  //   setIsLoading(true);
-  //     // Form submission logic here
-  //     console.log({
-  //       name,
-  //       price,
-  //       features: features.split(","), // Convert features to an array
-  //       description,
-  //       image,
-  //     });
-  //     const featuresArray = features.split(",");
-  //     uploadMedia(image).then((snapshot) => {
-  //       getDownloadURL(snapshot.ref).then((url) => {
-  //         console.log("File uploaded successfully:", url);
-  //         const categoryInfo = {
-  //           name: name,
-  //           price: price,
-  //           features: featuresArray,
-  //           description: description,
-  //         };
-
-  //         axios
-  //           .post(
-  //             import.meta.env.VITE_BACKEND_URL + "/api/category",
-  //             categoryInfo,
-  //             {
-  //               headers: {
-  //                 Authorization: "Bearer " + token,
-  //               },
-  //             }
-  //           )
-  //           .then((res) => {
-  //             console.log(res);
-  //           });
-  //       });
-  //     });
-  //   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
 
-    // Introduce a delay using setTimeout
     setTimeout(() => {
-      // Convert features to an array
       const featuresArray = features.split(",");
 
-      // Construct the category information object
-      const categoryInfo = {
-        name: name,
-        price: price,
-        features: featuresArray,
-        description: description,
-        image: image,
-      };
-
-      axios
-        .post(
-          import.meta.env.VITE_BACKEND_URL + "/api/category",
-          categoryInfo,
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
+      // Upload the image to Supabase
+      uploadMediaToSupabase(image)
+        .then((res) => {
+          // Get the public URL of the uploaded image
+          const { data, error } = supabase.storage
+            .from("Images")
+            .getPublicUrl(image.name);
+          if (error) {
+            throw new Error("Failed to get public URL for the image");
           }
-        )
+
+          const publicUrl = data.publicUrl;
+          console.log("Uploaded image public URL:", publicUrl); // Debug log
+
+          // Prepare the category info payload
+          const categoryInfo = {
+            name,
+            price,
+            features: featuresArray,
+            description,
+            image: publicUrl, // Use the public URL from Supabase
+          };
+
+          // Post the category info to the backend
+          return axios.post(
+            import.meta.env.VITE_BACKEND_URL + "/api/category",
+            categoryInfo,
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            }
+          );
+        })
         .then((res) => {
           console.log("Category created successfully:", res.data);
           setIsLoading(false); // Stop loading
@@ -177,25 +150,12 @@ export default function AddCategoryForm() {
         </div>
 
         {/* Image */}
-        {/* <div>
+        <div>
           <label className="block font-medium mb-1">Image</label>
           <input
             type="file"
             onChange={(e) => setImage(e.target.files[0])}
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div> */}
-
-        {/* Image URL */}
-        <div>
-          <label className="block font-medium mb-1">Image URL</label>
-          <input
-            type="text"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter image URL"
-            required
           />
         </div>
 

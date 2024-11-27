@@ -3,6 +3,8 @@ import axios from "axios";
 import { FaTrash, FaEdit, FaPlus } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 export default function AdminCategories() {
   const token = localStorage.getItem("token");
@@ -30,20 +32,39 @@ export default function AdminCategories() {
   }, [categoriesIsLoaded]);
 
   function deleteCategory(name) {
-    axios
-      .delete(import.meta.env.VITE_BACKEND_URL + "/api/category/" + name, {
-        headers: {
-          Authorization: "Bearer " + token,
+    confirmAlert({
+      title: "Confirm Deletion",
+      message: `Are you sure you want to delete the category "${name}"?`,
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            axios
+              .delete(
+                import.meta.env.VITE_BACKEND_URL + "/api/category/" + name,
+                {
+                  headers: {
+                    Authorization: "Bearer " + token,
+                  },
+                }
+              )
+              .then((res) => {
+                setCategoriesIsLoaded(false);
+                toast.success("Category deleted successfully!");
+              })
+              .catch((err) => {
+                toast.error("Error Deleting Category!");
+              });
+          },
         },
-      })
-      .then((res) => {
-        setCategoriesIsLoaded(false);
-        toast.success("Category deleted successfully!");
-        console.log(token);
-      })
-      .catch((err) => {
-        toast.error("Error Deleting Category!");
-      });
+        {
+          label: "No",
+          onClick: () => {
+            // Do nothing if No is clicked
+          },
+        },
+      ],
+    });
   }
 
   function handlePlusClick() {
@@ -61,7 +82,9 @@ export default function AdminCategories() {
         <FaPlus color="white" />
       </button>
       <div className="p-4">
-        <h1 className="text-3xl font-semibold mb-6 text-white">Categories</h1>
+        <h1 className="text-4xl font-extrabold mb-8  tracking-wide leading-snug shadow-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black text-white px-8 py-4 rounded-full w-[480px]">
+          Categories
+        </h1>
         <table className="min-w-full bg-white rounded-lg shadow-lg overflow-hidden">
           <thead>
             <tr className="bg-blue-600 text-white text-left">
@@ -94,11 +117,15 @@ export default function AdminCategories() {
                   {category.description}
                 </td>
                 <td className="py-4 px-6 border-b">
-                  <img
-                    src={category.image}
-                    alt={category.name}
-                    className="w-16 h-16 object-cover rounded-full shadow-md"
-                  />
+                  {category.image ? (
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="w-16 h-16 object-cover rounded-full shadow-md"
+                    />
+                  ) : (
+                    "No Image"
+                  )}
                 </td>
                 <td className="py-4 px-6 border-b text-gray-700 flex space-x-2">
                   <button
