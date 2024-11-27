@@ -4,10 +4,12 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { AiOutlineMail, AiOutlineLock, AiOutlineLogin } from "react-icons/ai";
 import { toast } from "react-toastify";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   function handleLogin() {
@@ -98,12 +100,23 @@ export default function Login() {
             />
             <input
               id="password"
-              type="password"
+              type={isPasswordVisible ? "text" : "password"}
               placeholder="Enter your password"
               className="w-full bg-[#00000000] border-[2px] text-white placeholder:text-white h-[50px] px-[40px]"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <button
+              type="button"
+              className="absolute right-3 top-[15px] text-white"
+              onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+            >
+              {isPasswordVisible ? (
+                <FaEyeSlash size={24} />
+              ) : (
+                <FaEye size={24} />
+              )}
+            </button>
           </div>
         </div>
 
