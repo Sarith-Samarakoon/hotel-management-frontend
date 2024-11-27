@@ -2,7 +2,10 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import AdminPage from "./pages/adminPage/admin";
 import HomePage from "./pages/client-page/homePage";
-import TestComponent from "./components/test/test";
+import AboutUs from "./pages/client-page/aboutusPage";
+import Gallery from "./pages/client-page/galleryPage";
+import ContactUs from "./pages/client-page/contactUsPage";
+import UploadComponent from "./components/test/test3";
 import LoginPage from "./pages/login/login";
 import RegisterPage from "./pages/login/register";
 import { Toaster } from "react-hot-toast";
@@ -16,10 +19,13 @@ function App() {
         <ToastContainer position="top-right" reverseOrder={false} />
         <Routes path="/">
           <Route path="/*" element={<HomePage />}></Route>
+          <Route path="/about-us" element={<AboutUs />}></Route>
+          <Route path="/gallery" element={<Gallery />}></Route>
+          <Route path="/contact-us" element={<ContactUs />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/register" element={<RegisterPage />}></Route>
           <Route path="/admin/*" element={<AdminPage />}></Route>
-          <Route path="/test" element={<TestComponent />}></Route>
+          <Route path="/test" element={<UploadComponent />}></Route>
         </Routes>
       </BrowserRouter>
     </>
