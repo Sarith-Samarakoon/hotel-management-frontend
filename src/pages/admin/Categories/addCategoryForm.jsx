@@ -2,12 +2,16 @@ import { useState } from "react";
 import { uploadMediaToSupabase, supabase } from "../../../utils/mediaUpload";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { FaStar } from "react-icons/fa"; // Import FaStar for the star icons
 
 export default function AddCategoryForm() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [features, setFeatures] = useState("");
   const [description, setDescription] = useState("");
+  const [bedtype, setBedtype] = useState("");
+  const [ratings, setRatings] = useState(0); // Ratings state
+  const [hoverRating, setHoverRating] = useState(0); // For hover effects on stars
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -25,8 +29,7 @@ export default function AddCategoryForm() {
 
       // Upload the image to Supabase
       uploadMediaToSupabase(image)
-        .then((res) => {
-          // Get the public URL of the uploaded image
+        .then(() => {
           const { data, error } = supabase.storage
             .from("Images")
             .getPublicUrl(image.name);
@@ -35,18 +38,21 @@ export default function AddCategoryForm() {
           }
 
           const publicUrl = data.publicUrl;
-          console.log("Uploaded image public URL:", publicUrl); // Debug log
 
-          // Prepare the category info payload
+          // Prepare payload
           const categoryInfo = {
             name,
             price,
             features: featuresArray,
             description,
-            image: publicUrl, // Use the public URL from Supabase
+            bedtype,
+            ratings,
+            image: publicUrl,
           };
 
-          // Post the category info to the backend
+          console.log("Payload sent to backend:", categoryInfo);
+
+          // Send payload to backend
           return axios.post(
             import.meta.env.VITE_BACKEND_URL + "/api/category",
             categoryInfo,
@@ -57,39 +63,22 @@ export default function AddCategoryForm() {
             }
           );
         })
-        .then((res) => {
-          console.log("Category created successfully:", res.data);
-          setIsLoading(false); // Stop loading
-          // Show success toast
-          toast.success("Category created successfully!", {
-            position: "top-right",
-            autoClose: 3000, // Close after 3 seconds
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-          // Optional: Reset the form fields
+        .then(() => {
+          setIsLoading(false);
+          toast.success("Category created successfully!");
+          // Reset form
           setName("");
           setPrice(0);
           setFeatures("");
           setDescription("");
-          setImage("");
+          setBedtype("");
+          setRatings(0);
+          setImage(null);
         })
         .catch((err) => {
           console.error("Error creating category:", err.message);
-          setIsLoading(false); // Stop loading on error
-          // Show error toast
-          toast.error("Error creating category!", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
+          setIsLoading(false);
+          toast.error("Error creating category!");
         });
     }, 1000);
   };
@@ -124,6 +113,44 @@ export default function AddCategoryForm() {
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter price"
           />
+        </div>
+
+        {/* Bed Type */}
+        <div>
+          <label className="block font-medium mb-1">Bed Type</label>
+          <select
+            value={bedtype}
+            onChange={(e) => setBedtype(e.target.value)}
+            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select a bed type</option>
+            <option value="Single">Single</option>
+            <option value="Double">Double</option>
+            <option value="Queen">Queen</option>
+            <option value="King">King</option>
+            <option value="Twin">Twin</option>
+          </select>
+        </div>
+
+        {/* Ratings */}
+        <div>
+          <label className="block font-medium mb-1">Ratings</label>
+          <div className="flex space-x-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <FaStar
+                key={star}
+                size={24}
+                className={`cursor-pointer ${
+                  (hoverRating || ratings) >= star
+                    ? "text-yellow-500"
+                    : "text-gray-300"
+                }`}
+                onClick={() => setRatings(star)}
+                onMouseEnter={() => setHoverRating(star)}
+                onMouseLeave={() => setHoverRating(0)}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Features */}

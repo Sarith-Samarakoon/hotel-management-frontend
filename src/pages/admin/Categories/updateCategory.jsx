@@ -2,18 +2,24 @@ import { useState } from "react";
 import { uploadMediaToSupabase, supabase } from "../../../utils/mediaUpload";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { FaStar } from "react-icons/fa"; // Import FaStar for star ratings
 
 export default function UpdateCategoryForm() {
   const location = useLocation();
   const navigate = useNavigate();
+
   if (location.state == null) {
     window.location.href = "/admin/category";
   }
+
   const [name, setName] = useState(location.state.name);
   const [price, setPrice] = useState(location.state.price);
   const [features, setFeatures] = useState(location.state.features.join(","));
   const [description, setDescription] = useState(location.state.description);
+  const [bedtype, setBedtype] = useState(location.state.bedtype);
+  const [ratings, setRatings] = useState(location.state.ratings || 0); // Star ratings
+  const [hoverRating, setHoverRating] = useState(0); // For hover effect on stars
   const [image, setImage] = useState(location.state.image);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,18 +36,19 @@ export default function UpdateCategoryForm() {
       const featuresArray = features.split(",");
 
       // Validate input
-      if (!name) {
-        console.error("Category name is missing.");
-        toast.error("Invalid category name.");
+      if (!name || !bedtype) {
+        toast.error("Please fill in all required fields.");
         setIsLoading(false);
         return;
       }
 
       // Prepare the category info object with the existing image by default
       const categoryInfo = {
-        price: price,
+        price,
         features: featuresArray,
-        description: description,
+        description,
+        bedtype,
+        ratings, // Include ratings in payload
         image: location.state.image, // Default to the existing image
       };
 
@@ -72,8 +79,7 @@ export default function UpdateCategoryForm() {
               }
             );
           })
-          .then((res) => {
-            console.log("Category updated successfully:", res.data);
+          .then(() => {
             toast.success("Category updated successfully!");
             navigate("/admin/category");
           })
@@ -96,8 +102,7 @@ export default function UpdateCategoryForm() {
               },
             }
           )
-          .then((res) => {
-            console.log("Category updated successfully:", res.data);
+          .then(() => {
             toast.success("Category updated successfully!");
             navigate("/admin/category");
           })
@@ -145,6 +150,45 @@ export default function UpdateCategoryForm() {
             placeholder="Enter price"
             required
           />
+        </div>
+
+        {/* Bed Type */}
+        <div>
+          <label className="block font-medium mb-1">Bed Type</label>
+          <select
+            value={bedtype}
+            onChange={(e) => setBedtype(e.target.value)}
+            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+          >
+            <option value="">Select a bed type</option>
+            <option value="Single">Single</option>
+            <option value="Double">Double</option>
+            <option value="Queen">Queen</option>
+            <option value="King">King</option>
+            <option value="Twin">Twin</option>
+          </select>
+        </div>
+
+        {/* Ratings */}
+        <div>
+          <label className="block font-medium mb-1">Ratings</label>
+          <div className="flex space-x-2">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <FaStar
+                key={star}
+                size={24}
+                className={`cursor-pointer ${
+                  (hoverRating || ratings) >= star
+                    ? "text-yellow-500"
+                    : "text-gray-300"
+                }`}
+                onClick={() => setRatings(star)}
+                onMouseEnter={() => setHoverRating(star)}
+                onMouseLeave={() => setHoverRating(0)}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Features */}

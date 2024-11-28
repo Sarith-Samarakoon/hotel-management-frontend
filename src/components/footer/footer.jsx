@@ -41,7 +41,7 @@ function Footer() {
             <img
               src="https://xsdzkvctceyxhipwoaht.supabase.co/storage/v1/object/public/Images/Golden%20Horizon%20Villa%20Logo.webp?t=2024-11-27T09%3A38%3A05.191Z"
               alt="Golden Horizon Villa Logo"
-              className="w-10 h-10 object-cover"
+              className="w-20 h-20 object-cover rounded-full"
             />
             <p>
               <span className="text-lg font-semibold text-white">

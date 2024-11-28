@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { FaTrash, FaEdit, FaPlus } from "react-icons/fa";
+import { FaTrash, FaEdit, FaPlus, FaStar } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
@@ -48,11 +48,11 @@ export default function AdminCategories() {
                   },
                 }
               )
-              .then((res) => {
+              .then(() => {
                 setCategoriesIsLoaded(false);
                 toast.success("Category deleted successfully!");
               })
-              .catch((err) => {
+              .catch(() => {
                 toast.error("Error Deleting Category!");
               });
           },
@@ -82,7 +82,7 @@ export default function AdminCategories() {
         <FaPlus color="white" />
       </button>
       <div className="p-4">
-        <h1 className="text-4xl font-extrabold mb-8  tracking-wide leading-snug shadow-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black text-white px-8 py-4 rounded-full w-[480px]">
+        <h1 className="text-4xl font-extrabold mb-8 tracking-wide leading-snug shadow-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black text-white px-8 py-4 rounded-full w-[480px]">
           Categories
         </h1>
         <table className="min-w-full bg-white rounded-lg shadow-lg overflow-hidden">
@@ -90,8 +90,10 @@ export default function AdminCategories() {
             <tr className="bg-blue-600 text-white text-left">
               <th className="py-3 px-6 border-b font-medium">Category Name</th>
               <th className="py-3 px-6 border-b font-medium">Price</th>
+              <th className="py-3 px-6 border-b font-medium">Bed Type</th>
               <th className="py-3 px-6 border-b font-medium">Features</th>
               <th className="py-3 px-6 border-b font-medium">Description</th>
+              <th className="py-3 px-6 border-b font-medium">Ratings</th>
               <th className="py-3 px-6 border-b font-medium">Image</th>
               <th className="py-3 px-6 border-b font-medium">Actions</th>
             </tr>
@@ -111,11 +113,34 @@ export default function AdminCategories() {
                   ${category.price}
                 </td>
                 <td className="py-4 px-6 border-b text-gray-700">
+                  {category.bedtype}
+                </td>
+                <td className="py-4 px-6 border-b text-gray-700">
                   {category.features.join(", ")}
                 </td>
                 <td className="py-4 px-6 border-b text-gray-700">
                   {category.description}
                 </td>
+                <td className="py-4 px-6 border-b text-yellow-500 flex">
+                  {/* Render stars based on the rating */}
+                  {Array(5)
+                    .fill()
+                    .map((_, i) => (
+                      <FaStar
+                        key={i}
+                        className={
+                          i < Math.round(category.ratings || 0) // Use a default value of 0 if ratings is undefined
+                            ? "text-yellow-500"
+                            : "text-gray-300"
+                        }
+                      />
+                    ))}
+                  <span className="ml-2 text-sm text-gray-500">
+                    ({(category.ratings || 0).toFixed(1)}){" "}
+                    {/* Ensure ratings is defined */}
+                  </span>
+                </td>
+
                 <td className="py-4 px-6 border-b">
                   {category.image ? (
                     <img
