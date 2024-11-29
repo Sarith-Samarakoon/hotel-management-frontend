@@ -20,7 +20,8 @@ export default function UpdateRoomForm() {
     location.state.specialDescription
   );
   const [notes, setNotes] = useState(location.state.notes);
-  const [photos, setPhotos] = useState(location.state.photos);
+  const [photos, setPhotos] = useState(location.state.photos || []);
+  const [newPhotos, setNewPhotos] = useState([]); // Store new photos to be added
   const [isLoading, setIsLoading] = useState(false);
 
   const token = localStorage.getItem("token");
@@ -66,22 +67,49 @@ export default function UpdateRoomForm() {
     toast.success("Photo removed successfully!");
   };
 
-  const handleSubmit = (e) => {
+  const handleNewPhotoAdd = (e) => {
+    const files = Array.from(e.target.files);
+    setNewPhotos((prevPhotos) => [...prevPhotos, ...files]);
+
+    toast.success("Photo added successfully!");
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const roomInfo = {
-      roomId,
-      category,
-      maxGuests,
-      available,
-      specialDescription,
-      notes,
-      photos,
-    };
+    try {
+      // Upload new photos to Supabase and get their URLs
+      const uploadedNewPhotos = await Promise.all(
+        newPhotos.map((photo) =>
+          uploadMediaToSupabase(photo).then(() => {
+            const { data, error } = supabase.storage
+              .from("Images")
+              .getPublicUrl(photo.name);
 
-    axios
-      .put(
+            if (error) {
+              throw new Error("Failed to get public URL for the photo");
+            }
+
+            return data.publicUrl;
+          })
+        )
+      );
+
+      // Combine existing photos with new photos
+      const updatedPhotos = [...photos, ...uploadedNewPhotos];
+
+      const roomInfo = {
+        roomId,
+        category,
+        maxGuests,
+        available,
+        specialDescription,
+        notes,
+        photos: updatedPhotos,
+      };
+
+      await axios.put(
         import.meta.env.VITE_BACKEND_URL + "/api/rooms/" + roomId,
         roomInfo,
         {
@@ -89,19 +117,16 @@ export default function UpdateRoomForm() {
             Authorization: "Bearer " + token,
           },
         }
-      )
-      .then((res) => {
-        console.log("Room updated successfully:", res.data);
-        toast.success("Room updated successfully!");
-        navigate("/admin/room");
-      })
-      .catch((err) => {
-        console.error("Error updating room:", err.message);
-        toast.error("Error updating room!");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      );
+
+      toast.success("Room updated successfully!");
+      navigate("/admin/room");
+    } catch (err) {
+      console.error("Error updating room:", err.message);
+      toast.error("Error updating room!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -189,18 +214,14 @@ export default function UpdateRoomForm() {
 
         {/* Photos */}
         <div>
-          <label className="block font-medium mb-1">Photos</label>
+          <label className="block font-medium mb-1">Existing Photos</label>
           {photos.map((photo, index) => (
             <div key={index} className="flex items-center gap-4 mt-2">
-              {typeof photo === "string" ? (
-                <img
-                  src={photo}
-                  alt="Room photo"
-                  className="w-16 h-16 object-cover rounded-lg"
-                />
-              ) : (
-                <p>{photo.name}</p>
-              )}
+              <img
+                src={photo}
+                alt="Room photo"
+                className="w-16 h-16 object-cover rounded-lg"
+              />
               <input
                 type="file"
                 onChange={(e) => handlePhotoUpdate(index, e.target.files[0])}
@@ -215,6 +236,26 @@ export default function UpdateRoomForm() {
               </button>
             </div>
           ))}
+        </div>
+
+        {/* Add New Photos */}
+        <div>
+          <label className="block font-medium mb-1">Add New Photos</label>
+          <input
+            type="file"
+            multiple
+            onChange={handleNewPhotoAdd}
+            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          {newPhotos.length > 0 && (
+            <div className="mt-2">
+              {newPhotos.map((photo, index) => (
+                <span key={index} className="block text-sm">
+                  {photo.name}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Submit Button */}

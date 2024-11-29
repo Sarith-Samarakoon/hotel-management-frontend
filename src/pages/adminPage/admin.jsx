@@ -1,5 +1,6 @@
 import { Route, Routes, Link, useLocation } from "react-router-dom";
 import Dashboard from "../admin/Dashboard/dashboard";
+import AdminSettings from "../admin/Dashboard/adminSettings";
 import AdminBooking from "../admin/Booking/adminBooking";
 import AdminCategories from "../admin/Categories/adminCategories";
 import AdminGalleryItems from "../admin/GalleryItem/galleryItem";
@@ -7,10 +8,17 @@ import AdminFeedback from "../admin/Feedback/feedback";
 import AdminRooms from "../admin/Rooms/rooms";
 import AdminUsers from "../admin/Users/users";
 import AddCategoryForm from "../admin/Categories/addCategoryForm";
+import AddRoomForm from "../admin/Rooms/addRooms";
 import UpdateRoomForm from "../admin/Rooms/updateRooms";
 import UpdateCategoryForm from "../admin/Categories/updateCategory";
 import AddGalleryItemForm from "../admin/GalleryItem/AddGalleryItemForm";
 import UpdateGalleryItemForm from "../admin/GalleryItem/UpdateGalleryForm";
+import Staff from "../admin/Staff/adminStaff";
+import AddStaffForm from "../admin/Staff/addStaff";
+import UpdateStaffForm from "../admin/Staff/updateStaff";
+import Event from "../admin/Events/adminEvents";
+import AddEventForm from "../admin/Events/addEvent";
+import UpdateEventForm from "../admin/Events/updateEvent";
 import {
   FaHeart,
   FaBell,
@@ -28,6 +36,7 @@ import {
   FaImages,
   FaChartLine,
 } from "react-icons/fa";
+import { HiUsers } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -39,7 +48,8 @@ export default function AdminPage() {
     firstName: "Admin",
     lastName: "",
     email: "",
-    image: "https://via.placeholder.com/150", // Default profile image
+    image:
+      "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg", // Default profile image
   });
 
   // State for live time
@@ -59,6 +69,7 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     const token = localStorage.getItem("token");
 
     if (token) {
@@ -80,7 +91,9 @@ export default function AdminPage() {
               firstName: firstName || "Admin",
               lastName: lastName || "",
               email: email || "Not Available",
-              image: image || "https://via.placeholder.com/150", // Use placeholder if no image
+              image:
+                image ||
+                "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg", // Use placeholder if no image
             });
           } else {
             console.error("Logged-in user not found in response.");
@@ -90,7 +103,7 @@ export default function AdminPage() {
           console.error("Error fetching admin profile:", err.message);
         });
     }
-  }, []);
+  }, [location]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -105,7 +118,10 @@ export default function AdminPage() {
         <div className="flex flex-col items-center bg-blue-700 py-6 px-4 rounded-b-xl shadow-md">
           <div className="relative w-20 h-20">
             <img
-              src={adminProfile.image || "https://via.placeholder.com/100"} // Dynamic or placeholder image
+              src={
+                adminProfile.image ||
+                "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg"
+              } // Dynamic or placeholder image
               alt="Admin Profile"
               className="w-full h-full rounded-full border-4 border-white shadow-lg"
             />
@@ -127,7 +143,11 @@ export default function AdminPage() {
         {/* Navigation Links */}
         <nav className="flex flex-col mt-6 space-y-3">
           {[
-            { name: "Dashboard", icon: <FaChartLine />, link: "/admin" },
+            {
+              name: "Dashboard",
+              icon: <FaChartLine />,
+              link: "/admin/",
+            },
             {
               name: "Bookings",
               icon: <CiBookmarkCheck />,
@@ -139,18 +159,20 @@ export default function AdminPage() {
               link: "/admin/category",
             },
             { name: "Rooms", icon: <FaHotel />, link: "/admin/room" },
-            { name: "Users", icon: <FaUsers />, link: "/admin/user" },
+            { name: "Users", icon: <HiUsers />, link: "/admin/user" },
             { name: "Feedback", icon: <FaComments />, link: "/admin/feedback" },
             {
               name: "Gallery Items",
               icon: <FaImages />,
               link: "/admin/gallery-item",
             },
+            { name: "Staff", icon: <FaUsers />, link: "/admin/staff" }, // New Staff Link
+            { name: "Events", icon: <FaBell />, link: "/admin/event" }, // New Event Link
           ].map((item, index) => (
             <Link
               to={item.link}
               key={index}
-              className={`flex items-center gap-3 px-6 py-3 text-2xl font-medium rounded-lg transition-colors ${
+              className={`flex items-center gap-3 px-6 py-1 text-3xl font-medium rounded-lg transition-colors ${
                 location.pathname === item.link
                   ? "bg-blue-600 shadow-xl"
                   : "hover:bg-blue-500 hover:shadow-sm"
@@ -218,12 +240,13 @@ export default function AdminPage() {
                 } text-xl hover:scale-110 transition-transform cursor-pointer`}
                 title="Notifications"
               />
-              <FaCog
-                className={`${
-                  isDarkMode ? "text-gray-400" : "text-gray-600"
-                } text-xl hover:scale-110 transition-transform cursor-pointer`}
-                title="Settings"
-              />
+              <Link to="/admin/settings" title="Settings">
+                <FaCog
+                  className={`${
+                    isDarkMode ? "text-gray-400" : "text-gray-600"
+                  } text-xl hover:scale-110 transition-transform cursor-pointer`}
+                />
+              </Link>
             </div>
 
             {/* Theme Toggle */}
@@ -252,6 +275,7 @@ export default function AdminPage() {
         <main className="p-6">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/settings" element={<AdminSettings />} />
             <Route path="/booking" element={<AdminBooking />} />
             <Route path="/category" element={<AdminCategories />} />
             <Route path="/add-category" element={<AddCategoryForm />} />
@@ -266,6 +290,13 @@ export default function AdminPage() {
               path="/update-gallery-item"
               element={<UpdateGalleryItemForm />}
             />
+            <Route path="/staff" element={<Staff />} />
+            <Route path="/add-staff" element={<AddStaffForm />} />
+            <Route path="/update-staff" element={<UpdateStaffForm />} />
+            <Route path="/event" element={<Event />} />
+            <Route path="/add-event" element={<AddEventForm />} />
+            <Route path="/update-event" element={<UpdateEventForm />} />
+            <Route path="/add-room" element={<AddRoomForm />} />
           </Routes>
         </main>
       </div>
