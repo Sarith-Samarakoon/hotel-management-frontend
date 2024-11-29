@@ -12,7 +12,7 @@ import {
 import { BsFileTextFill } from "react-icons/bs";
 import Header from "../../../components/header/Header";
 import Navbar from "../../../components/header/Navbar";
-import Footer from "../../../components/footer/Footer";
+import Footer from "../../../components/footer/footer";
 import Countdown from "./countdown";
 import ImageGallery from "./imagesGallery";
 

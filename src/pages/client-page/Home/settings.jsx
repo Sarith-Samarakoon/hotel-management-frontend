@@ -14,7 +14,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import Header from "../../../components/header/Header";
-import Footer from "../../../components/footer/Footer";
+import Footer from "../../../components/footer/footer";
 import UpdateSettings from "./userUpdate"; // Import the update form
 
 export default function Settings() {

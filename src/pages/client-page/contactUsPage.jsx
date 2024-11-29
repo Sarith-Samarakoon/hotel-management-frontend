@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Header from "../../components/header/Header";
-import Footer from "../../components/footer/Footer";
+import Footer from "../../components/footer/footer";
 import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt } from "react-icons/fa";
 
 function ContactUs() {

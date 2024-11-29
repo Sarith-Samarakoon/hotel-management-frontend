@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Header from "../../components/header/Header";
-import Footer from "../../components/footer/Footer";
+import Footer from "../../components/footer/footer";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 export default function Gallery() {

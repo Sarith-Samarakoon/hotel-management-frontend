@@ -9,7 +9,7 @@ import {
   FaStickyNote,
 } from "react-icons/fa";
 import Header from "../../../components/header/Header";
-import Footer from "../../../components/footer/Footer";
+import Footer from "../../../components/footer/footer";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import carousel styles
 import { useState } from "react";

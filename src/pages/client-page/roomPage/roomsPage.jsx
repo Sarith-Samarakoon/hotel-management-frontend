@@ -4,7 +4,7 @@ import axios from "axios";
 import { FaTag, FaDollarSign, FaWifi, FaBed, FaStar } from "react-icons/fa";
 import toast from "react-hot-toast";
 import Header from "../../../components/header/Header";
-import Footer from "../../../components/footer/Footer";
+import Footer from "../../../components/footer/footer";
 
 export default function Rooms() {
   const token = localStorage.getItem("token");

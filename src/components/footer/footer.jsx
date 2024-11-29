@@ -1,4 +1,4 @@
-function Footer() {
+function footer() {
   return (
     <div>
       {/* Footer Section */}
@@ -9,7 +9,7 @@ function Footer() {
             <h4 className="font-bold mb-2">Address</h4>
             <p>Hotel in Jaipur</p>
             <p>+91 123456789</p>
-            <p>hotel@gmail.com</p>
+            <p>hotel@goldenhorizonhotel.com</p>
           </div>
           <div className="w-full sm:w-1/3 mb-4">
             <h4 className="font-bold mb-2">My Account</h4>
@@ -113,4 +113,4 @@ function Footer() {
   );
 }
 
-export default Footer;
+export default footer;
