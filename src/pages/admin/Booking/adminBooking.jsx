@@ -1,71 +1,78 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+
 export default function AdminBookings() {
-  // Hardcoded booking data
-  const bookings = [
-    {
-      bookingId: 101,
-      email: "john.doe@example.com",
-      status: "confirmed",
-      reason: "Business Trip",
-      start: new Date("2024-11-01"),
-      end: new Date("2024-11-05"),
-      notes: "Late check-in requested.",
-    },
-    {
-      bookingId: 102,
-      email: "jane.smith@example.com",
-      status: "pending",
-      reason: "Vacation",
-      start: new Date("2024-12-15"),
-      end: new Date("2024-12-25"),
-      notes: "Family suite with sea view.",
-    },
-    {
-      bookingId: 103,
-      email: "emma.jones@example.com",
-      status: "cancelled",
-      reason: "Honeymoon",
-      start: new Date("2024-11-10"),
-      end: new Date("2024-11-20"),
-      notes: "Early check-in preferred.",
-    },
-  ];
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Get token from localStorage
+  const token = localStorage.getItem("token");
+
+  // Redirect to login if no token is found
+  if (!token) {
+    window.location.href = "/login";
+  }
+
+  useEffect(() => {
+    // Fetch all bookings
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/bookings`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Pass the token in Authorization header
+        },
+      })
+      .then((response) => {
+        setBookings(response.data.bookings);
+      })
+      .catch((error) => {
+        console.error("Error fetching bookings:", error);
+        toast.error(
+          error.response?.data?.message || "Failed to fetch bookings."
+        );
+      })
+      .finally(() => setLoading(false));
+  }, [token]);
+
   return (
-    <div className="w-full">
-      <div className="p-4">
-        <h1 className="text-2xl mb-4 text-white">Bookings</h1>
-        <table className="min-w-full bg-white">
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">All Bookings</h1>
+      {loading ? (
+        <p>Loading bookings...</p>
+      ) : bookings.length === 0 ? (
+        <p>No bookings found.</p>
+      ) : (
+        <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr>
-              <th className="py-2 px-4 border">Booking ID</th>
-              <th className="py-2 px-4 border">Email</th>
-              <th className="py-2 px-4 border">Status</th>
-              <th className="py-2 px-4 border">Reason</th>
-              <th className="py-2 px-4 border">Start Date</th>
-              <th className="py-2 px-4 border">End Date</th>
-              <th className="py-2 px-4 border">Notes</th>
+              <th className="px-4 py-2 border">Booking ID</th>
+              <th className="px-4 py-2 border">Room ID</th>
+              <th className="px-4 py-2 border">Email</th>
+              <th className="px-4 py-2 border">Start Date</th>
+              <th className="px-4 py-2 border">End Date</th>
+              <th className="px-4 py-2 border">Status</th>
             </tr>
           </thead>
           <tbody>
-            {bookings.map((booking, index) => {
-              return (
-                <tr key={booking.bookingId}>
-                  <td className="py-2 px-4 border">{booking.bookingId}</td>
-                  <td className="py-2 px-4 border">{booking.email}</td>
-                  <td className="py-2 px-4 border">
-                    {booking.start.toDateString()}
-                  </td>
-                  <td className="py-2 px-4 border">
-                    {booking.end.toDateString()}
-                  </td>
-                  <td className="py-2 px-4 border">{booking.status}</td>
-                  <td className="py-2 px-4 border">{booking.reason}</td>
-                  <td className="py-2 px-4 border">{booking.notes}</td>
-                </tr>
-              );
-            })}
+            {bookings.map((booking) => (
+              <tr key={booking.bookingId}>
+                <td className="px-4 py-2 border">{booking.bookingId}</td>
+                <td className="px-4 py-2 border">{booking.roomId}</td>
+                <td className="px-4 py-2 border">{booking.email}</td>
+                <td className="px-4 py-2 border">
+                  {new Date(booking.start).toLocaleDateString()}
+                </td>
+                <td className="px-4 py-2 border">
+                  {new Date(booking.end).toLocaleDateString()}
+                </td>
+                <td className="px-4 py-2 border">
+                  {booking.status || "Pending"}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
-      </div>
+      )}
     </div>
   );
 }
