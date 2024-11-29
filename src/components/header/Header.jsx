@@ -31,7 +31,7 @@ function Header() {
               className="w-20 h-20 object-cover rounded-full"
             />
             <h1 className="text-white text-2xl sm:text-3xl lg:text-4xl font-bold">
-              Golden Horizon Villa
+              Golden Horizon Hotel
             </h1>
           </div>
 

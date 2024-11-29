@@ -40,12 +40,12 @@ function Footer() {
             {/* Logo Image */}
             <img
               src="https://xsdzkvctceyxhipwoaht.supabase.co/storage/v1/object/public/Images/Golden%20Horizon%20Villa%20Logo.webp?t=2024-11-27T09%3A38%3A05.191Z"
-              alt="Golden Horizon Villa Logo"
+              alt="Golden Horizon Hotel Logo"
               className="w-20 h-20 object-cover rounded-full"
             />
             <p>
               <span className="text-lg font-semibold text-white">
-                Golden Horizon Villa
+                Golden Horizon Hotel
               </span>
               <br />
               <span className="text-sm text-gray-400">

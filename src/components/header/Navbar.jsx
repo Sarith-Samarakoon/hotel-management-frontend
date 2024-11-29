@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 function Navbar() {
   return (
     <header
-      className="absolute top-17 left-40 w-full z-50"
+      className="absolute top-17 left-0 w-full z-50"
       style={{
         background: "transparent",
         backdropFilter: "blur(0px)",
       }}
     >
-      <div className="container mx-auto px-4 lg:px-8 py-4 flex justify-end items-center">
+      <div className="container mx-auto px-4 lg:px-8 py-4 flex justify-end items-center mr-0">
         <div className="flex items-center space-x-6">
           {/* Social Media Icons */}
           <a

@@ -1,9 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { CiLogin } from "react-icons/ci";
 import { FaSignOutAlt } from "react-icons/fa";
 
-function UserTag(props) {
+function UserTag() {
   const [name, setName] = useState("Guest");
   const [profileImage, setProfileImage] = useState(
     "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg" // Default profile picture
@@ -15,7 +14,7 @@ function UserTag(props) {
     if (token) {
       setIsLoggedIn(true); // User is logged in if token exists
       axios
-        .get(`${import.meta.env.VITE_BACKEND_URL}/api/users/`, {
+        .get(`${import.meta.env.VITE_BACKEND_URL}/api/users/me`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -24,9 +23,8 @@ function UserTag(props) {
         .then((res) => {
           console.log("API Response:", res.data);
 
-          const users = res.data.users; // API returns 'users' array
-          const loggedInUserEmail = JSON.parse(atob(token.split(".")[1])).email; // Decode token to get email
-          const user = users.find((u) => u.email === loggedInUserEmail); // Match user by email
+          // Assuming the API returns the user object directly
+          const user = res.data.user;
 
           if (user) {
             setName(`${user.firstName || "Guest"} ${user.lastName || ""}`);
@@ -35,7 +33,7 @@ function UserTag(props) {
                 "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg"
             ); // Use user image or default
           } else {
-            console.error("Logged-in user not found in response.");
+            console.error("User object not found in response.");
             setName("Guest");
           }
         })
