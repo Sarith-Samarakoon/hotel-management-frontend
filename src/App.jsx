@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import AdminPage from "./pages/adminPage/admin";
-import HomePage from "./pages/client-page/homePage/homePage";
-import Settings from "./pages/client-page/homePage/settings";
-import UpdateUser from "./pages/client-page/homePage/userUpdate";
+import HomePage from "./pages/client-page/Home/homePage";
+import Settings from "./pages/client-page/Home/settings";
+import UpdateUser from "./pages/client-page/Home/userUpdate";
 import AboutUs from "./pages/client-page/aboutusPage";
 import Gallery from "./pages/client-page/galleryPage";
 import ContactUs from "./pages/client-page/contactUsPage";
