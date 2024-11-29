@@ -1,0 +1,36 @@
+/* Keyframes for left-to-right scrolling */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Keyframes for right-to-left scrolling */
+@keyframes scroll-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Scroll animation for first slider */
+.animate-scroll-left {
+  animation: scroll-left linear infinite;
+  animation-duration: 30s; /* Adjust duration for slower/faster scrolling */
+}
+
+/* Scroll animation for second slider */
+.animate-scroll-right {
+  animation: scroll-right linear infinite;
+  animation-duration: 30s; /* Adjust duration for slower/faster scrolling */
+}
+
+/* Add hover effects for the images */
+.group:hover img {
+  transform: scale(1.1);
+}
