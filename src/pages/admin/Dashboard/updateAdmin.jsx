@@ -139,7 +139,7 @@ export default function UpdateSettings({ closeModal }) {
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
+            className=" text-gray-700 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
             placeholder="Enter first name"
             required
           />
@@ -154,7 +154,7 @@ export default function UpdateSettings({ closeModal }) {
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
+            className="text-gray-700 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
             placeholder="Enter last name"
             required
           />
@@ -169,7 +169,7 @@ export default function UpdateSettings({ closeModal }) {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
+            className="text-gray-700 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
             placeholder="Enter email"
             required
           />
@@ -184,7 +184,7 @@ export default function UpdateSettings({ closeModal }) {
             type="text"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
+            className="text-gray-700 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
             placeholder="Enter phone number"
           />
         </div>
@@ -198,7 +198,7 @@ export default function UpdateSettings({ closeModal }) {
             type="text"
             value={whatsApp}
             onChange={(e) => setWhatsApp(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
+            className="text-gray-700 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-gray-400"
             placeholder="Enter WhatsApp number"
           />
         </div>

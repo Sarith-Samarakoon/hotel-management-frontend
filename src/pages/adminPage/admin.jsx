@@ -1,10 +1,13 @@
 import { Route, Routes, Link, useLocation } from "react-router-dom";
 import Dashboard from "../admin/Dashboard/dashboard";
 import AdminSettings from "../admin/Dashboard/adminSettings";
+import AdminContact from "../admin/ContactUs/adminContact";
 import AdminBooking from "../admin/Booking/adminBooking";
+import AdminUpdateBookings from "../admin/Booking/updateBooking";
 import AdminCategories from "../admin/Categories/adminCategories";
 import AdminGalleryItems from "../admin/GalleryItem/galleryItem";
 import AdminFeedback from "../admin/Feedback/feedback";
+import AdminResponses from "../admin/Feedback/respondFeedback";
 import AdminRooms from "../admin/Rooms/rooms";
 import AdminUsers from "../admin/Users/users";
 import AddCategoryForm from "../admin/Categories/addCategoryForm";
@@ -55,6 +58,9 @@ export default function AdminPage() {
   // State for live time
   const [currentTime, setCurrentTime] = useState("");
   const [isDarkMode, setIsDarkMode] = useState(false); // Theme state
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [pendingBookingCount, setPendingBookingCount] = useState(0);
+  const [notRespondedCount, setNotRespondedCount] = useState(0); // Not Responded Feedback Count
 
   const toggleTheme = () => setIsDarkMode((prevMode) => !prevMode);
 
@@ -67,6 +73,64 @@ export default function AdminPage() {
 
     return () => clearInterval(interval); // Clear interval on unmount
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token == null) {
+      window.location.href = "/login";
+    }
+
+    // Fetch unread messages count
+    axios
+      .get(import.meta.env.VITE_BACKEND_URL + "/api/contacts", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        const unreadMessages = res.data.messages.filter(
+          (message) => !message.read
+        );
+        setUnreadCount(unreadMessages.length);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    // Fetch not responded feedback count
+    axios
+      .get(import.meta.env.VITE_BACKEND_URL + "/api/feedback", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        const notRespondedFeedbacks = res.data.feedback.filter(
+          (feedback) => !feedback.responded
+        );
+        setNotRespondedCount(notRespondedFeedbacks.length);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [location]);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token == null) {
+      window.location.href = "/login";
+    }
+
+    axios
+      .get(import.meta.env.VITE_BACKEND_URL + "/api/bookings", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        const pendingBookings = res.data.bookings.filter(
+          (booking) => booking.status === "pending"
+        );
+        setPendingBookingCount(pendingBookings.length);
+      })
+      .catch((err) => {
+        console.error("Error fetching bookings:", err);
+      });
+  }, [location]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -198,7 +262,7 @@ export default function AdminPage() {
         >
           {/* Title */}
           <h1 className="text-2xl font-extrabold tracking-wide text-blue-600 sm:text-3xl md:text-4xl lg:text-5xl">
-            Golden Horizon Villa{" "}
+            Golden Horizon Hotel{" "}
             <span className="text-teal-600">Admin Panel</span>
           </h1>
 
@@ -222,26 +286,57 @@ export default function AdminPage() {
 
             {/* Icons */}
             <div className="flex items-center gap-7">
-              <FaHeart
-                className={`${
-                  isDarkMode ? "text-red-400" : "text-red-500"
-                } text-xl hover:scale-110 transition-transform cursor-pointer`}
-                title="Favorites"
-              />
-              <FaEnvelope
-                className={`${
-                  isDarkMode ? "text-blue-400" : "text-blue-500"
-                } text-xl hover:scale-110 transition-transform cursor-pointer`}
-                title="Messages"
-              />
-              <FaBell
-                className={`${
-                  isDarkMode ? "text-yellow-400" : "text-yellow-500"
-                } text-xl hover:scale-110 transition-transform cursor-pointer`}
-                title="Notifications"
-              />
+              {/* Heart with Not Responded Feedback Count */}
+              <Link to="/admin/feedback" title="Feedback">
+                <div className="relative">
+                  <FaHeart
+                    size={25}
+                    className={`${
+                      isDarkMode ? "text-purple-400" : "text-purple-600"
+                    } text-xl hover:scale-110 transition-transform cursor-pointer`}
+                  />
+                  {notRespondedCount > 0 && (
+                    <span className="absolute bottom-3 left-4 bg-red-500 text-white font-extrabold rounded-full px-2 py-1 text-[10px]">
+                      {notRespondedCount}
+                    </span>
+                  )}
+                </div>
+              </Link>
+              {/* Updated FaEnvelope with Link */}
+              <Link to="/admin/contact" title="Messages">
+                <div className="relative">
+                  <FaEnvelope
+                    size={25}
+                    className={`${
+                      isDarkMode ? "text-blue-400" : "text-blue-500"
+                    } text-xl hover:scale-110 transition-transform cursor-pointer`}
+                  />
+                  {unreadCount >= 0 && (
+                    <span className="absolute bottom-3 left-4 bg-red-500 text-white font-extrabold rounded-full px-2 py-1 text-[10px]">
+                      {unreadCount}
+                    </span>
+                  )}
+                </div>
+              </Link>
+              <Link to="/admin/booking">
+                <div className="relative">
+                  <FaBell
+                    size={25}
+                    className={`${
+                      isDarkMode ? "text-yellow-400" : "text-yellow-500"
+                    } text-xl hover:scale-110 transition-transform cursor-pointer`}
+                    title="Bookings"
+                  />
+                  {pendingBookingCount >= 0 && (
+                    <span className="absolute bottom-3 left-4 bg-red-500 text-white font-extrabold rounded-full px-2 py-1 text-[10px]">
+                      {pendingBookingCount}
+                    </span>
+                  )}
+                </div>
+              </Link>
               <Link to="/admin/settings" title="Settings">
                 <FaCog
+                  size={25}
                   className={`${
                     isDarkMode ? "text-gray-400" : "text-gray-600"
                   } text-xl hover:scale-110 transition-transform cursor-pointer`}
@@ -255,7 +350,11 @@ export default function AdminPage() {
               onClick={toggleTheme}
               title="Toggle Theme"
             >
-              {isDarkMode ? <FaSun className="text-yellow-500" /> : <FaMoon />}
+              {isDarkMode ? (
+                <FaSun size={25} className="text-yellow-500" />
+              ) : (
+                <FaMoon size={25} />
+              )}
             </button>
 
             {/* Logout Button */}
@@ -276,7 +375,9 @@ export default function AdminPage() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/settings" element={<AdminSettings />} />
+            <Route path="/contact" element={<AdminContact />} />
             <Route path="/booking" element={<AdminBooking />} />
+            <Route path="/update-bookings" element={<AdminUpdateBookings />} />
             <Route path="/category" element={<AdminCategories />} />
             <Route path="/add-category" element={<AddCategoryForm />} />
             <Route path="/update-category" element={<UpdateCategoryForm />} />
@@ -284,6 +385,7 @@ export default function AdminPage() {
             <Route path="/update-room" element={<UpdateRoomForm />} />
             <Route path="/user" element={<AdminUsers />} />
             <Route path="/feedback" element={<AdminFeedback />} />
+            <Route path="/respond-feedback" element={<AdminResponses />} />
             <Route path="/gallery-item" element={<AdminGalleryItems />} />
             <Route path="/add-gallery-item" element={<AddGalleryItemForm />} />
             <Route
