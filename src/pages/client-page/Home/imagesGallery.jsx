@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./imageGallery.css";
+import { FaBed } from "react-icons/fa";
 
 const ImageGallery = () => {
   const firstSliderImages = [
@@ -58,8 +59,11 @@ const ImageGallery = () => {
 
   return (
     <div className="py-16 bg-gray-50">
-      <h2 className="text-4xl font-bold mb-10 text-center text-gray-800">
-        Our Gallery
+      <h2 className="text-4xl font-bold text-center mb-8 text-black flex items-center justify-center gap-4">
+        <FaBed className="text-pink-500 text-5xl" />
+        <span className="inline-block bg-gradient-to-r from-pink-500 to-purple-500 text-transparent bg-clip-text">
+          Our Gallery
+        </span>
       </h2>
 
       {/* First image slider (scrolls to the left) */}

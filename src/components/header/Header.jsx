@@ -1,4 +1,14 @@
-import { FaCog, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaCog,
+  FaSignOutAlt,
+  FaHome,
+  FaInfoCircle,
+  FaBed,
+  FaImages,
+  FaStar,
+  FaPhone,
+  FaEnvelope,
+} from "react-icons/fa"; // Import icons
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import UserTag from "../userData/userdata";
@@ -22,7 +32,7 @@ function Header() {
         <div className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
           {/* Logo Section */}
           <div
-            className="flex items-center space-x-3 cursor-pointer"
+            className="flex items-center space-x-3 cursor-pointer -ml-40"
             onClick={() => navigateTo("/")} // Navigate to Home on logo click
           >
             <img
@@ -35,12 +45,13 @@ function Header() {
             </h1>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="hidden lg:flex space-x-6 text-white font-semibold">
+          {/* Navigation Links (Desktop) */}
+          <nav className="hidden lg:flex space-x-6 text-white font-semibold mr-40">
             <button
               onClick={() => navigateTo("/")}
               className="relative group transition duration-300"
             >
+              <FaHome className="inline mr-2" />
               <span className="hover:text-blue-300 transition duration-300">
                 Home
               </span>
@@ -50,6 +61,7 @@ function Header() {
               onClick={() => navigateTo("/about-us")}
               className="relative group transition duration-300"
             >
+              <FaInfoCircle className="inline mr-2" />
               <span className="hover:text-blue-300 transition duration-300">
                 About Us
               </span>
@@ -59,6 +71,7 @@ function Header() {
               onClick={() => navigateTo("/rooms")}
               className="relative group transition duration-300"
             >
+              <FaBed className="inline mr-2" />
               <span className="hover:text-blue-300 transition duration-300">
                 Rooms
               </span>
@@ -68,6 +81,7 @@ function Header() {
               onClick={() => navigateTo("/gallery")}
               className="relative group transition duration-300"
             >
+              <FaImages className="inline mr-2" />
               <span className="hover:text-blue-300 transition duration-300">
                 Gallery
               </span>
@@ -77,6 +91,7 @@ function Header() {
               onClick={() => navigateTo("/reviews")}
               className="relative group transition duration-300"
             >
+              <FaStar className="inline mr-2" />
               <span className="hover:text-blue-300 transition duration-300">
                 Reviews
               </span>
@@ -86,6 +101,7 @@ function Header() {
               onClick={() => navigateTo("/inquiries")}
               className="relative group transition duration-300"
             >
+              <FaPhone className="inline mr-2" />
               <span className="hover:text-blue-300 transition duration-300">
                 Inquiries
               </span>
@@ -95,6 +111,7 @@ function Header() {
               onClick={() => navigateTo("/contact-us")}
               className="relative group transition duration-300"
             >
+              <FaEnvelope className="inline mr-2" />
               <span className="hover:text-blue-300 transition duration-300">
                 Contact Us
               </span>
@@ -156,7 +173,7 @@ function Header() {
                   onClick={() => navigateTo("/")}
                   className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
                 >
-                  Home
+                  <FaHome className="inline mr-2" /> Home
                 </button>
               </li>
               <li>
@@ -164,7 +181,7 @@ function Header() {
                   onClick={() => navigateTo("/about-us")}
                   className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
                 >
-                  About Us
+                  <FaInfoCircle className="inline mr-2" /> About Us
                 </button>
               </li>
               <li>
@@ -172,7 +189,7 @@ function Header() {
                   onClick={() => navigateTo("/rooms")}
                   className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
                 >
-                  Rooms
+                  <FaBed className="inline mr-2" /> Rooms
                 </button>
               </li>
               <li>
@@ -180,7 +197,7 @@ function Header() {
                   onClick={() => navigateTo("/gallery")}
                   className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
                 >
-                  Gallery
+                  <FaImages className="inline mr-2" /> Gallery
                 </button>
               </li>
               <li>
@@ -188,7 +205,7 @@ function Header() {
                   onClick={() => navigateTo("/reviews")}
                   className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
                 >
-                  Reviews
+                  <FaStar className="inline mr-2" /> Reviews
                 </button>
               </li>
               <li>
@@ -196,7 +213,7 @@ function Header() {
                   onClick={() => navigateTo("/inquiries")}
                   className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
                 >
-                  Inquiries
+                  <FaPhone className="inline mr-2" /> Inquiries
                 </button>
               </li>
               <li>
@@ -204,7 +221,7 @@ function Header() {
                   onClick={() => navigateTo("/contact-us")}
                   className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
                 >
-                  Contact Us
+                  <FaEnvelope className="inline mr-2" /> Contact Us
                 </button>
               </li>
             </ul>

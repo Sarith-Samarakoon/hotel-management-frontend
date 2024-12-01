@@ -1,4 +1,10 @@
-import { FaFacebookF, FaTwitter, FaInstagram, FaCog } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaInstagram,
+  FaCog,
+  FaCalendarAlt,
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 function Navbar() {
@@ -40,6 +46,18 @@ function Navbar() {
           >
             <FaInstagram size={25} />
           </a>
+
+          {/* Link to Booked Rooms */}
+          <Link
+            to="/my-bookings"
+            className="text-white hover:text-blue-600 transition duration-300 flex items-center space-x-2"
+            aria-label="My Booked Rooms"
+          >
+            <FaCalendarAlt size={25} />
+            <span className="hidden sm:inline text-lg font-medium">
+              My Bookings
+            </span>
+          </Link>
 
           {/* Settings Icon with Text */}
           <Link
