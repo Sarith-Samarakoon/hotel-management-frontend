@@ -6,6 +6,7 @@ export default function BookingForm({ room, onClose }) {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [notes, setNotes] = useState("");
+  const [guests, setGuests] = useState(1); // Default number of guests
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Get token from localStorage
@@ -25,7 +26,8 @@ export default function BookingForm({ room, onClose }) {
       start,
       end,
       notes,
-      category: room.category || "", // Optional if booking is category-based
+      guests, // Include the number of guests in the booking
+      // Optional if booking is category-based
     };
 
     axios
@@ -79,6 +81,22 @@ export default function BookingForm({ room, onClose }) {
             value={end}
             onChange={(e) => setEnd(e.target.value)}
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            required
+          />
+        </div>
+
+        {/* Guests */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700">
+            Number of Guests
+          </label>
+          <input
+            type="number"
+            value={guests}
+            onChange={(e) => setGuests(e.target.value)}
+            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            min="1"
+            max={room.maxGuests || 10} // Optional validation for max guests
             required
           />
         </div>

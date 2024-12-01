@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react"; // Import useRef
 import axios from "axios";
 import {
   FaBed,
@@ -15,6 +15,7 @@ import Navbar from "../../../components/header/Navbar";
 import Footer from "../../../components/footer/footer";
 import Countdown from "./countdown";
 import ImageGallery from "./imagesGallery";
+import WhyChooseUs from "./whyChooseUsPage";
 
 export default function HomePage() {
   const images = [
@@ -28,8 +29,12 @@ export default function HomePage() {
   const [roomsCount, setRoomsCount] = useState(0);
   const [guestsCount, setGuestsCount] = useState(0);
   const [staffCount, setStaffCount] = useState(0);
+
   // Events
   const [events, setEvents] = useState([]);
+
+  // Ref for the events section
+  const eventsRef = useRef(null);
 
   useEffect(() => {
     let interval;
@@ -65,6 +70,12 @@ export default function HomePage() {
     );
   };
 
+  const scrollToEvents = () => {
+    if (eventsRef.current) {
+      eventsRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <>
       <Header />
@@ -85,7 +96,10 @@ export default function HomePage() {
             <p className="text-white text-lg mt-4">
               The perfect place for relaxation and luxury.
             </p>
-            <button className="mt-6 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-700">
+            <button
+              onClick={scrollToEvents} // Add scroll function here
+              className="mt-6 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-700"
+            >
               Explore Now
             </button>
           </div>
@@ -138,45 +152,85 @@ export default function HomePage() {
         </div>
       </div>
       {/* Live Count Section */}
-      <div
-        className="bg-gray-100 py-5"
-        style={{
-          backgroundImage: `url('https://i.pinimg.com/736x/f4/dc/67/f4dc67d77584acdc840d9c1fbef82e0d.jpg')`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          backgroundAttachment: "fixed",
-          backgroundPosition: "center",
-        }}
-      >
-        <h2 className="text-4xl font-bold text-center mb-8 text-black ">
-          ____OUR STATUS____
-        </h2>
-        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-3 gap-6 px-6">
-          {/* Rooms Count */}
-          <div className="flex flex-col items-center bg-white rounded-lg shadow-lg p-6 hover:scale-105 transition-transform">
-            <FaBed className="text-6xl text-blue-500 mb-4" />
-            <div className="text-6xl font-extrabold text-blue-500 mb-2">
-              {roomsCount}
+      <div className="bg-gray-50 py-16 px-6">
+        {/* Welcome Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center container mx-auto">
+          {/* Welcome Text */}
+          <div>
+            <h2 className="text-lg font-bold uppercase text-yellow-500">
+              Explore Luxury
+            </h2>
+            <h1 className="text-5xl font-bold text-gray-900 mt-2">
+              Discover <span className="text-orange-500">Golden Horizon</span>
+            </h1>
+            <p className="text-lg text-gray-600 mt-4">
+              Indulge in a world of elegance, comfort, and relaxation. Golden
+              Horizon offers premium hospitality, luxurious accommodations, and
+              unforgettable experiences, all tailored to your desires.
+            </p>
+
+            {/* Live Stats */}
+            <div className="grid grid-cols-3 gap-6 mt-8">
+              {/* Rooms */}
+              <div className="flex flex-col items-center border border-gray-200 rounded-lg p-6 bg-white shadow-md">
+                <FaBed className="text-4xl text-yellow-500 mb-4" />
+                <h3 className="text-4xl font-bold text-gray-800">
+                  {roomsCount}
+                </h3>
+                <p className="text-gray-500 font-semibold">Rooms</p>
+              </div>
+
+              {/* Staff */}
+              <div className="flex flex-col items-center border border-gray-200 rounded-lg p-6 bg-white shadow-md">
+                <FaUsers className="text-4xl text-blue-500 mb-4" />
+                <h3 className="text-4xl font-bold text-gray-800">
+                  {staffCount}
+                </h3>
+                <p className="text-gray-500 font-semibold">Staff</p>
+              </div>
+
+              {/* Guests */}
+              <div className="flex flex-col items-center border border-gray-200 rounded-lg p-6 bg-white shadow-md">
+                <FaUserFriends className="text-4xl text-green-500 mb-4" />
+                <h3 className="text-4xl font-bold text-gray-800">
+                  {guestsCount}
+                </h3>
+                <p className="text-gray-500 font-semibold">Guests</p>
+              </div>
             </div>
-            <p className="text-lg font-semibold text-gray-700">Rooms</p>
+
+            {/* Explore More Button */}
+            <div className="mt-6">
+              <button className="px-6 py-3 bg-orange-500 text-white text-lg font-bold rounded-lg hover:bg-orange-600 transition">
+                Discover More
+              </button>
+            </div>
           </div>
 
-          {/* Guests Count */}
-          <div className="flex flex-col items-center bg-white rounded-lg shadow-lg p-6 hover:scale-105 transition-transform">
-            <FaUserFriends className="text-6xl text-green-500 mb-4" />
-            <div className="text-6xl font-extrabold text-green-500 mb-2">
-              {guestsCount}
+          {/* Images Section */}
+          <div className="grid grid-rows-2 grid-cols-2 gap-4">
+            <div className="row-span-2">
+              <img
+                src="https://i.pinimg.com/736x/c5/87/13/c58713fac4cbf7f36f4632b537382a94.jpg"
+                alt="Luxury Room"
+                className="w-full h-full object-cover rounded-lg"
+              />
             </div>
-            <p className="text-lg font-semibold text-gray-700">Guests</p>
-          </div>
-
-          {/* Staff Count */}
-          <div className="flex flex-col items-center bg-white rounded-lg shadow-lg p-6 hover:scale-105 transition-transform">
-            <FaUsers className="text-6xl text-red-500 mb-4" />
-            <div className="text-6xl font-extrabold text-red-500 mb-2">
-              {staffCount}
-            </div>
-            <p className="text-lg font-semibold text-gray-700">Staff</p>
+            <img
+              src="https://i.pinimg.com/736x/b6/69/ec/b669eca9524f7bc97b19f50e2c9d0058.jpg"
+              alt="Resort View"
+              className="w-full h-full object-cover rounded-lg"
+            />
+            <img
+              src="https://i.pinimg.com/736x/2e/21/14/2e2114ff00286b227ef11b2a5f3124f7.jpg"
+              alt="Poolside View"
+              className="w-full h-full object-cover rounded-lg"
+            />
+            {/* <img
+              src="https://i.pinimg.com/736x/a2/f4/0f/a2f40f17862ebe5128715d44dbd36510.jpg"
+              alt="Relaxation Area"
+              className="w-full h-full object-cover rounded-lg"
+            /> */}
           </div>
         </div>
       </div>
@@ -185,67 +239,20 @@ export default function HomePage() {
       <ImageGallery />
 
       {/* Why Choose Us Section */}
-      <div className="py-16 bg-gray-100 text-center">
-        <h2 className="text-3xl font-bold mb-6">Why Choose Us?</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
-          {/* Desert */}
-          <div className="relative overflow-hidden rounded-lg shadow-lg">
-            <img
-              src="https://xsdzkvctceyxhipwoaht.supabase.co/storage/v1/object/public/Images/Desert.webp"
-              alt="Desert"
-              className="w-full h-48 object-cover"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-              <span className="text-white text-lg font-bold">Desert</span>
-            </div>
-          </div>
-
-          {/* Coffee */}
-          <div className="relative overflow-hidden rounded-lg shadow-lg">
-            <img
-              src="https://xsdzkvctceyxhipwoaht.supabase.co/storage/v1/object/public/Images/Coffee.webp"
-              alt="Coffee"
-              className="w-full h-48 object-cover"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-              <span className="text-white text-lg font-bold">Coffee</span>
-            </div>
-          </div>
-
-          {/* Catering */}
-          <div className="relative overflow-hidden rounded-lg shadow-lg">
-            <img
-              src="https://xsdzkvctceyxhipwoaht.supabase.co/storage/v1/object/public/Images/Catering.webp"
-              alt="Catering"
-              className="w-full h-48 object-cover"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-              <span className="text-white text-lg font-bold">Catering</span>
-            </div>
-          </div>
-
-          {/* Services */}
-          <div className="relative overflow-hidden rounded-lg shadow-lg">
-            <img
-              src="https://xsdzkvctceyxhipwoaht.supabase.co/storage/v1/object/public/Images/Services.webp"
-              alt="Services"
-              className="w-full h-48 object-cover"
-            />
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-              <span className="text-white text-lg font-bold">Services</span>
-            </div>
-          </div>
-        </div>
-        <button className="mt-8 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-700">
-          View All
-        </button>
-      </div>
+      <WhyChooseUs />
 
       {/* Upcoming Events Section */}
-      <div className="py-16 bg-gray-50 text-center">
-        <h2 className="text-4xl font-bold mb-10 text-gray-800">
-          Upcoming Events
+      <div
+        ref={eventsRef} // Add the ref here
+        className="py-16 bg-gray-50 text-center"
+      >
+        <h2 className="text-4xl font-bold text-center mb-8 text-gray-800 flex items-center justify-center gap-4">
+          <FaCalendarAlt className="text-teal-500 text-5xl" />
+          <span className="inline-block bg-gradient-to-r from-teal-500 to-blue-500 text-transparent bg-clip-text">
+            Upcoming Events
+          </span>
         </h2>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-6">
           {events.map((event) => (
             <div
