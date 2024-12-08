@@ -16,7 +16,7 @@ export default function AdminMessages() {
   const [messages, setMessages] = useState([]);
   const [messagesIsLoaded, setMessagesIsLoaded] = useState(false);
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize navigation hook
 
   useEffect(() => {
     if (!messagesIsLoaded) {
@@ -82,9 +82,9 @@ export default function AdminMessages() {
         }
       )
       .then(() => {
-        // Refresh the page to reflect changes
-        navigate(0);
+        setMessagesIsLoaded(false);
         toast.success("Message status updated successfully!");
+        navigate("/admin/contact");
       })
       .catch(() => {
         toast.error("Error updating message status!");
@@ -94,9 +94,21 @@ export default function AdminMessages() {
   return (
     <div className="w-full">
       <div className="p-4">
-        <h1 className="text-4xl font-extrabold mb-8 tracking-wide leading-snug shadow-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black text-white px-8 py-4 rounded-full w-[480px]">
-          Contact Messages
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <button
+            onClick={() => navigate("/admin/contact")} // Navigate to inquiries
+            className="text-4xl font-extrabold tracking-wide leading-snug shadow-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black text-white px-8 py-4 rounded-full w-[48%] text-center"
+          >
+            Contact Messages
+          </button>
+          <button
+            onClick={() => navigate("/admin/admin-inquiry")} // Navigate to inquiries
+            className="text-4xl font-extrabold tracking-wide leading-snug shadow-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black text-white px-8 py-4 rounded-full w-[48%] text-center"
+          >
+            User Inquiries
+          </button>
+        </div>
+
         <table className="min-w-full bg-white rounded-lg shadow-lg overflow-hidden">
           <thead>
             <tr className="bg-blue-600 text-white text-left">
@@ -127,11 +139,11 @@ export default function AdminMessages() {
                 </td>
                 <td className="py-4 px-6 border-b text-gray-700">
                   {(() => {
-                    const parsedDate = new Date(message.createdAt); // Parse the date from the field
+                    const parsedDate = new Date(message.createdAt);
                     if (isNaN(parsedDate.getTime())) {
-                      return "Invalid Date"; // Handle invalid date
+                      return "Invalid Date";
                     }
-                    return format(parsedDate, "MM/dd/yyyy hh:mm a"); // Format to include both date and time
+                    return format(parsedDate, "MM/dd/yyyy hh:mm a");
                   })()}
                 </td>
 

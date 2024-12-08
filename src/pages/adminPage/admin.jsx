@@ -2,6 +2,7 @@ import { Route, Routes, Link, useLocation } from "react-router-dom";
 import Dashboard from "../admin/Dashboard/dashboard";
 import AdminSettings from "../admin/Dashboard/adminSettings";
 import AdminContact from "../admin/ContactUs/adminContact";
+import AdminInquiry from "../admin/ContactUs/adminInquiry";
 import AdminBooking from "../admin/Booking/adminBooking";
 import AdminUpdateBookings from "../admin/Booking/updateBooking";
 import AdminCategories from "../admin/Categories/adminCategories";
@@ -61,8 +62,19 @@ export default function AdminPage() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [pendingBookingCount, setPendingBookingCount] = useState(0);
   const [notRespondedCount, setNotRespondedCount] = useState(0); // Not Responded Feedback Count
+  const [pendingInquiriesCount, setPendingInquiriesCount] = useState(0); // Pending Inquiries Count
 
   const toggleTheme = () => setIsDarkMode((prevMode) => !prevMode);
+
+  useEffect(() => {
+    // Update time every second
+    const interval = setInterval(() => {
+      const now = new Date();
+      setCurrentTime(now.toLocaleTimeString());
+    }, 1000);
+
+    return () => clearInterval(interval); // Clear interval on unmount
+  }, []);
 
   useEffect(() => {
     // Update time every second
@@ -105,6 +117,21 @@ export default function AdminPage() {
           (feedback) => !feedback.responded
         );
         setNotRespondedCount(notRespondedFeedbacks.length);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    // Fetch pending inquiries count
+    axios
+      .get(import.meta.env.VITE_BACKEND_URL + "/api/inquiry", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => {
+        const pendingInquiries = res.data.inquiries.filter(
+          (inquiry) => inquiry.status === "pending"
+        );
+        setPendingInquiriesCount(pendingInquiries.length);
       })
       .catch((err) => {
         console.error(err);
@@ -313,7 +340,7 @@ export default function AdminPage() {
                   />
                   {unreadCount >= 0 && (
                     <span className="absolute bottom-3 left-4 bg-red-500 text-white font-extrabold rounded-full px-2 py-1 text-[10px]">
-                      {unreadCount}
+                      {unreadCount + pendingInquiriesCount}
                     </span>
                   )}
                 </div>
@@ -376,6 +403,7 @@ export default function AdminPage() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/settings" element={<AdminSettings />} />
             <Route path="/contact" element={<AdminContact />} />
+            <Route path="/admin-inquiry" element={<AdminInquiry />} />
             <Route path="/booking" element={<AdminBooking />} />
             <Route path="/update-bookings" element={<AdminUpdateBookings />} />
             <Route path="/category" element={<AdminCategories />} />

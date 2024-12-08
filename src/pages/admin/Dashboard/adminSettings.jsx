@@ -50,8 +50,8 @@ export default function Settings() {
   }
 
   return (
-    <div className="w-full min-h-screen">
-      <div className="py-10">
+    <div className="w-full">
+      <div className="py-10 ">
         <div className="bg-white rounded-xl shadow-lg max-w-lg mx-auto p-8">
           <h1 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
             User Details
