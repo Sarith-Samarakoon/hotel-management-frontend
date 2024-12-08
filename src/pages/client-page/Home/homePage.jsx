@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"; // Import useRef
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import {
@@ -39,23 +39,32 @@ export default function HomePage() {
   const eventsRef = useRef(null);
 
   useEffect(() => {
-    let interval;
-    if (roomsCount < 50 || guestsCount < 120 || staffCount < 25) {
-      interval = setInterval(() => {
-        setRoomsCount((prev) => (prev < 50 ? prev + 1 : prev));
-        setGuestsCount((prev) => (prev < 120 ? prev + 1 : prev));
-        setStaffCount((prev) => (prev < 25 ? prev + 1 : prev));
-      }, 30); // Increment every 30ms
-    }
-    return () => clearInterval(interval);
-  }, [roomsCount, guestsCount, staffCount]);
+    // Fetch stats from the backend
+    axios
+      .get(`${import.meta.env.VITE_BACKEND_URL}/api/stat`)
+      .then((response) => {
+        const { rooms, users, staff } = response.data;
+        setRoomsCount(rooms || 0);
+        setGuestsCount(users || 0);
+        setStaffCount(staff || 0);
+      })
+      .catch((error) => {
+        console.error("Error fetching stats:", error.message);
+      });
+  }, []);
 
   useEffect(() => {
     // Fetch events from the backend
     axios
       .get(`${import.meta.env.VITE_BACKEND_URL}/api/events`)
       .then((response) => {
-        setEvents(response.data.events);
+        const allEvents = response.data.events || [];
+        // Sort events by start date (ascending) and take the closest 3
+        const closestEvents = allEvents
+          .filter((event) => new Date(event.startDate) >= new Date()) // Only future events
+          .sort((a, b) => new Date(a.startDate) - new Date(b.startDate)) // Sort by start date
+          .slice(0, 3); // Take the top 3 closest events
+        setEvents(closestEvents);
       })
       .catch((error) => {
         console.error("Error fetching events:", error.message);
@@ -173,7 +182,6 @@ export default function HomePage() {
 
             {/* Live Stats */}
             <div className="grid grid-cols-3 gap-6 mt-8">
-              {/* Rooms */}
               <div className="flex flex-col items-center border border-gray-200 rounded-lg p-6 bg-white shadow-md">
                 <FaBed className="text-4xl text-yellow-500 mb-4" />
                 <h3 className="text-4xl font-bold text-gray-800">
@@ -181,8 +189,6 @@ export default function HomePage() {
                 </h3>
                 <p className="text-gray-500 font-semibold">Rooms</p>
               </div>
-
-              {/* Staff */}
               <div className="flex flex-col items-center border border-gray-200 rounded-lg p-6 bg-white shadow-md">
                 <FaUsers className="text-4xl text-blue-500 mb-4" />
                 <h3 className="text-4xl font-bold text-gray-800">
@@ -190,8 +196,6 @@ export default function HomePage() {
                 </h3>
                 <p className="text-gray-500 font-semibold">Staff</p>
               </div>
-
-              {/* Guests */}
               <div className="flex flex-col items-center border border-gray-200 rounded-lg p-6 bg-white shadow-md">
                 <FaUserFriends className="text-4xl text-green-500 mb-4" />
                 <h3 className="text-4xl font-bold text-gray-800">
@@ -287,20 +291,15 @@ export default function HomePage() {
 
                 {/* Event Details */}
                 <div className="flex-1 p-4">
-                  {/* Event Name */}
                   <h3 className="text-lg md:text-2xl font-bold text-gray-800 flex items-center gap-2">
                     <FaCalendarAlt className="text-indigo-500" />
                     {event.name}
                   </h3>
-
-                  {/* Event Date Range */}
                   <p className="text-black text-sm md:text-base font-semibold flex items-center gap-2 mt-2">
                     <FaClock className="text-purple-500" />
                     {new Date(event.startDate).toLocaleDateString()} -{" "}
                     {new Date(event.endDate).toLocaleDateString()}
                   </p>
-
-                  {/* Event Description */}
                   <p className="text-gray-800 mt-3 text-sm md:text-base text-left flex items-start gap-2">
                     <BsFileTextFill className="text-green-500" size={30} />
                     {event.description}

@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/footer";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import ReactPaginate from "react-paginate";
 
 export default function Gallery() {
   const token = localStorage.getItem("token");
@@ -12,43 +13,63 @@ export default function Gallery() {
   }
 
   const [galleryItems, setGalleryItems] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [galleryIsLoaded, setGalleryIsLoaded] = useState(false);
+  const [galleryCurrentPage, setGalleryCurrentPage] = useState(0);
+  const [galleryTotalPages, setGalleryTotalPages] = useState(1);
+  const galleryItemsPerPage = 8; // Items per page for gallery
+
   const [staff, setStaff] = useState([]);
   const [staffIsLoaded, setStaffIsLoaded] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 4; // Items per page for staff
 
   useEffect(() => {
-    if (!isLoaded) {
-      axios
-        .get(import.meta.env.VITE_BACKEND_URL + "/api/gallery/")
-        .then((res) => {
-          setGalleryItems(res.data.list);
-          setIsLoaded(true);
-        })
-        .catch((err) => {
-          console.error("Error fetching gallery items:", err.message);
-          toast.error("Failed to fetch gallery items!");
-        });
-    }
-  }, [isLoaded]);
+    fetchGalleryItems(galleryCurrentPage);
+  }, [galleryCurrentPage]);
+
+  const fetchGalleryItems = (page) => {
+    axios
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/gallery?page=${
+          page + 1
+        }&limit=${galleryItemsPerPage}`
+      )
+      .then((res) => {
+        setGalleryItems(res.data.list);
+        setGalleryTotalPages(res.data.pagination.totalPages);
+        setGalleryIsLoaded(true);
+      })
+      .catch((err) => {
+        console.error("Error fetching gallery items:", err.message);
+        toast.error("Failed to fetch gallery items!");
+      });
+  };
 
   useEffect(() => {
-    if (!staffIsLoaded) {
-      axios
-        .get(import.meta.env.VITE_BACKEND_URL + "/api/staff", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setStaff(res.data.staff);
-          setStaffIsLoaded(true);
-        })
-        .catch((err) => {
-          console.error("Error fetching staff data:", err.message);
-          toast.error("Failed to fetch staff details!");
-        });
-    }
-  }, [staffIsLoaded]);
+    fetchStaff(currentPage);
+  }, [currentPage]);
+
+  const fetchStaff = (page) => {
+    axios
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/staff?page=${
+          page + 1
+        }&limit=${itemsPerPage}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((res) => {
+        setStaff(res.data.staff);
+        setTotalPages(res.data.pagination.totalPages);
+        setStaffIsLoaded(true);
+      })
+      .catch((err) => {
+        console.error("Error fetching staff data:", err.message);
+        toast.error("Failed to fetch staff details!");
+      });
+  };
 
   return (
     <div className="w-full min-h-screen flex flex-col">
@@ -94,7 +115,7 @@ export default function Gallery() {
         </div>
 
         <div className="container mx-auto px-6 py-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-5">
             {galleryItems.map((item, index) => (
               <div
                 key={index}
@@ -116,6 +137,24 @@ export default function Gallery() {
               </div>
             ))}
           </div>
+          {/* Pagination for Gallery */}
+          <ReactPaginate
+            previousLabel={"← Previous"}
+            nextLabel={"Next →"}
+            breakLabel={"..."}
+            pageCount={galleryTotalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={({ selected }) => setGalleryCurrentPage(selected)}
+            containerClassName={"pagination"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
         </div>
 
         {/* Staff Section */}
@@ -153,7 +192,7 @@ export default function Gallery() {
         </div>
 
         <div className="container mx-auto px-6 py-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-5">
             {staff.map((member, index) => (
               <div
                 key={index}
@@ -208,6 +247,24 @@ export default function Gallery() {
               </div>
             ))}
           </div>
+          {/* Pagination */}
+          <ReactPaginate
+            previousLabel={"← Previous"}
+            nextLabel={"Next →"}
+            breakLabel={"..."}
+            pageCount={totalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={({ selected }) => setCurrentPage(selected)}
+            containerClassName={"pagination"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
         </div>
       </div>
       <Footer />

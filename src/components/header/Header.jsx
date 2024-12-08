@@ -41,7 +41,7 @@ function Header() {
   return (
     <div>
       <header className="bg-gradient-to-r from-blue-500 to-indigo-600 shadow-lg">
-        <div className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
+        <div className=" mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
           {/* Logo Section */}
           <div
             className="flex items-center space-x-3 cursor-pointer"
@@ -50,7 +50,7 @@ function Header() {
             <img
               src="https://xsdzkvctceyxhipwoaht.supabase.co/storage/v1/object/public/Images/Golden%20Horizon%20Villa%20Logo.webp?t=2024-11-27T09%3A38%3A05.191Z"
               alt="Golden Horizon Villa Logo"
-              className="w-12 h-12 object-cover rounded-full"
+              className="w-20 h-20 object-cover rounded-full"
             />
             <h1 className="text-white text-2xl font-bold">
               Golden Horizon Hotel
@@ -60,7 +60,7 @@ function Header() {
           {/* Hamburger Menu */}
           <button
             onClick={toggleMenu}
-            className="2xl:hidden text-white focus:outline-none"
+            className="xl:hidden text-white focus:outline-none"
             aria-label="Menu"
           >
             {isMenuOpen ? (
@@ -71,7 +71,7 @@ function Header() {
           </button>
 
           {/* Desktop Navigation */}
-          <nav className="hidden 2xl:flex space-x-6 text-white font-semibold">
+          <nav className="hidden xl:flex space-x-6 text-white font-semibold">
             {menuItems.map((item, index) => (
               <button
                 key={index}
@@ -89,7 +89,7 @@ function Header() {
           </nav>
 
           {/* User Section */}
-          <div className="hidden 2xl:flex items-center space-x-4">
+          <div className="hidden xl:flex items-center space-x-4">
             <UserTag />
           </div>
         </div>
@@ -98,7 +98,7 @@ function Header() {
         <div
           className={`fixed inset-0 z-50 flex ${
             isMenuOpen ? "translate-x-0" : "-translate-x-full"
-          } transition-transform duration-300 bg-transparent 2xl:hidden`}
+          } transition-transform duration-300 bg-transparent xl:hidden`}
         >
           {/* Overlay */}
           <div

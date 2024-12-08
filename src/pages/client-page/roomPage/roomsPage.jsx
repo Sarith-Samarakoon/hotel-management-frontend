@@ -5,6 +5,7 @@ import { FaTag, FaDollarSign, FaWifi, FaBed, FaStar } from "react-icons/fa";
 import toast from "react-hot-toast";
 import Header from "../../../components/header/Header";
 import Footer from "../../../components/footer/footer";
+import ReactPaginate from "react-paginate";
 
 export default function Rooms() {
   const token = localStorage.getItem("token");
@@ -16,6 +17,9 @@ export default function Rooms() {
   const [categories, setCategories] = useState([]);
   const [roomsByCategory, setRoomsByCategory] = useState({});
   const [categoriesIsLoaded, setCategoriesIsLoaded] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 8; // Number of categories per page
 
   useEffect(() => {
     if (!categoriesIsLoaded) {
@@ -53,6 +57,11 @@ export default function Rooms() {
     });
   }, [categories]);
 
+  // Pagination logic
+  const offset = currentPage * itemsPerPage;
+  const currentCategories = categories.slice(offset, offset + itemsPerPage);
+  const totalPages = Math.ceil(categories.length / itemsPerPage);
+
   return (
     <div className="w-full bg-gray-100 min-h-screen">
       <Header />
@@ -63,7 +72,7 @@ export default function Rooms() {
 
         {/* Category Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {categories.map((category, index) => (
+          {currentCategories.map((category, index) => (
             <div
               key={index}
               className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transform hover:scale-105 transition-all duration-300"
@@ -102,7 +111,7 @@ export default function Rooms() {
                         <FaStar
                           key={i}
                           className={
-                            i < Math.round(category.ratings || 0) // Default value of 0 if ratings is undefined
+                            i < Math.round(category.ratings || 0)
                               ? "text-yellow-500"
                               : "text-gray-300"
                           }
@@ -160,6 +169,27 @@ export default function Rooms() {
               </div>
             </div>
           ))}
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="flex justify-center mt-8">
+          <ReactPaginate
+            previousLabel={"← Previous"}
+            nextLabel={"Next →"}
+            breakLabel={"..."}
+            pageCount={totalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={({ selected }) => setCurrentPage(selected)}
+            containerClassName={"pagination"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
         </div>
       </div>
       <Footer />

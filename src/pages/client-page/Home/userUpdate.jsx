@@ -105,14 +105,16 @@ export default function UpdateSettings({ closeModal }) {
 
         {/* Profile Picture */}
         <div className="flex flex-col items-center mb-6">
-          <div className="relative group">
+          <div
+            className="relative group"
+            onClick={() => document.getElementById("imageUpload").click()} // Trigger file input click
+          >
             <img
               src={
                 typeof image === "string" ? image : URL.createObjectURL(image)
               }
               alt="Profile"
               className="w-32 h-32 rounded-full object-cover shadow-md border-4 border-gray-300 group-hover:border-blue-500 transition-all cursor-pointer"
-              onClick={handleImageClick}
             />
             <div className="absolute inset-0 bg-black bg-opacity-30 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
               <p className="text-sm text-white font-medium">Change</p>
@@ -122,6 +124,7 @@ export default function UpdateSettings({ closeModal }) {
             type="file"
             id="imageUpload"
             className="hidden"
+            accept="image/*"
             onChange={(e) => setImage(e.target.files[0])}
           />
           <p className="text-sm text-gray-600 mt-2">

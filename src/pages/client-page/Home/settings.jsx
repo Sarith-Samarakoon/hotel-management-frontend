@@ -128,7 +128,7 @@ export default function Settings() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white rounded-lg p-6 shadow-lg w-96">
             <UpdateSettings closeModal={() => setIsModalOpen(false)} />
           </div>

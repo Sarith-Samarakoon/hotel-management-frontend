@@ -123,12 +123,12 @@ export default function Register() {
   };
 
   return (
-    <div className="w-full h-[100vh] pic-bg flex justify-center items-center">
-      <div className="w-[800px] h-[700px] backdrop-blur-md rounded-lg flex flex-col items-center justify-start p-4 relative">
+    <div className="w-full h-[100vh] pic-bg flex justify-center items-center overflow-hidden">
+      <div className="w-[800px] h-[700px] backdrop-blur-md rounded-lg flex flex-col items-center justify-start p-4 relative mt-12">
         <h1 className="text-3xl font-bold text-white text-center">
           Create an Account
         </h1>
-        z{/* Image Upload Field */}
+        {/* Image Upload Field */}
         <div className="flex flex-col items-center mt-6">
           <label className="text-white text-sm mb-2">
             Upload Profile Picture
@@ -268,7 +268,7 @@ export default function Register() {
           {isLoading ? "Signing Up..." : "Sign Up"}
         </button>
         {/* Login Link */}
-        <Link to="/login" className="absolute bottom-[10px] text-white">
+        <Link to="/login" className="absolute bottom-[85px] text-white">
           Already have an account?{" "}
           <span className="hover:text-red-500 font-bold transition-colors duration-300">
             Login

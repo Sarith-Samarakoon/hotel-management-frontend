@@ -359,7 +359,7 @@ function InquiryPage() {
                               <div className="flex-shrink-0">
                                 <img
                                   alt="Admin Avatar"
-                                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                                  src="https://xsdzkvctceyxhipwoaht.supabase.co/storage/v1/object/public/Images/Golden%20Horizon%20Villa%20Logo.webp?t=2024-11-27T09%3A38%3A05.191Z"
                                   className="w-10 h-10 rounded-full"
                                 />
                               </div>

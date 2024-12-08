@@ -3,10 +3,14 @@ import axios from "axios";
 import { FaQuoteLeft, FaQuoteRight, FaStar, FaDoorOpen } from "react-icons/fa";
 import Header from "../../components/header/Header";
 import Footer from "../../components/footer/footer";
+import ReactPaginate from "react-paginate";
 
 function ReviewPage() {
   const [reviews, setReviews] = useState([]);
   const [reviewsIsLoaded, setReviewsIsLoaded] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const reviewsPerPage = 6; // Items per page
 
   const token = localStorage.getItem("token");
 
@@ -16,22 +20,30 @@ function ReviewPage() {
   }
 
   useEffect(() => {
-    if (!reviewsIsLoaded) {
-      axios
-        .get(`${import.meta.env.VITE_BACKEND_URL}/api/feedback`, {
+    fetchReviews(currentPage);
+  }, [currentPage]);
+
+  const fetchReviews = (page) => {
+    axios
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/feedback?page=${
+          page + 1
+        }&limit=${reviewsPerPage}`,
+        {
           headers: {
             Authorization: `Bearer ${token}`, // Pass the token in Authorization header
           },
-        })
-        .then((res) => {
-          setReviews(res.data.feedback); // Assuming feedback array from API response
-          setReviewsIsLoaded(true);
-        })
-        .catch((err) => {
-          console.error("Error fetching reviews:", err);
-        });
-    }
-  }, [reviewsIsLoaded]);
+        }
+      )
+      .then((res) => {
+        setReviews(res.data.feedback);
+        setTotalPages(res.data.pagination.totalPages);
+        setReviewsIsLoaded(true);
+      })
+      .catch((err) => {
+        console.error("Error fetching reviews:", err);
+      });
+  };
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-r from-indigo-100 via-blue-200 to-purple-200">
@@ -56,7 +68,7 @@ function ReviewPage() {
               No reviews yet. Be the first to share your experience!
             </p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-5">
               {reviews.map((review) => (
                 <div
                   key={review._id}
@@ -122,6 +134,25 @@ function ReviewPage() {
               ))}
             </div>
           )}
+
+          {/* Pagination */}
+          <ReactPaginate
+            previousLabel={"← Previous"}
+            nextLabel={"Next →"}
+            breakLabel={"..."}
+            pageCount={totalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={({ selected }) => setCurrentPage(selected)}
+            containerClassName={"pagination"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
         </div>
       </div>
       <Footer />

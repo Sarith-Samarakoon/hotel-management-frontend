@@ -60,7 +60,7 @@ function UserTag() {
   };
 
   return (
-    <div className="  right-0 flex items-center cursor-pointer mr-2">
+    <div className="right-0 flex items-center cursor-pointer ml-8">
       <img
         src={profileImage}
         alt="User Avatar"
@@ -70,7 +70,7 @@ function UserTag() {
       {isLoggedIn ? (
         <button
           onClick={handleLogout}
-          className="ml-4 bg-red-600 text-white px-4 py-2 rounded-lg text-white hover:text-gray-300 transition duration-300 flex items-center space-x-1"
+          className="ml-2 bg-red-600 text-white px-4 py-2 rounded-lg text-white hover:text-gray-300 transition duration-300 flex items-center space-x-1"
         >
           <FaSignOutAlt size={20} />
           <span className="hidden sm:inline">Logout</span>
@@ -78,7 +78,7 @@ function UserTag() {
       ) : (
         <button
           onClick={handleLogin}
-          className="ml-4 bg-green-600 text-white font-bold px-4 py-2 rounded-lg text-white hover:text-gray-300 transition duration-300 flex items-center space-x-1"
+          className="ml-2 bg-green-600 text-white font-bold px-4 py-2 rounded-lg text-white hover:text-gray-300 transition duration-300 flex items-center space-x-1"
         >
           <FaSignOutAlt size={20} />
           <span className="hidden sm:inline">LogIn / SignUp</span>
