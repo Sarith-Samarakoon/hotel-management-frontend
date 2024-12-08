@@ -60,7 +60,7 @@ function UserTag() {
   };
 
   return (
-    <div className="absolute right-0 flex items-center cursor-pointer mr-2">
+    <div className="  right-0 flex items-center cursor-pointer mr-2">
       <img
         src={profileImage}
         alt="User Avatar"

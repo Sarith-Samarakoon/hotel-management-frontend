@@ -1,6 +1,4 @@
 import {
-  FaCog,
-  FaSignOutAlt,
   FaHome,
   FaInfoCircle,
   FaBed,
@@ -8,23 +6,37 @@ import {
   FaStar,
   FaPhone,
   FaEnvelope,
-} from "react-icons/fa"; // Import icons
+  FaBars,
+  FaTimes,
+} from "react-icons/fa"; // Importing icons
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // Added useLocation for route detection
 import UserTag from "../userData/userdata";
+import Navbar from "../../components/header/Navbar";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate(); // useNavigate hook for navigation
+  const navigate = useNavigate();
+  const location = useLocation(); // Get the current route
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   const navigateTo = (path) => {
-    setIsMenuOpen(false); // Close the menu if open (for mobile)
+    setIsMenuOpen(false);
     navigate(path);
   };
+
+  const menuItems = [
+    { label: "Home", icon: <FaHome />, path: "/" },
+    { label: "About Us", icon: <FaInfoCircle />, path: "/about-us" },
+    { label: "Rooms", icon: <FaBed />, path: "/rooms" },
+    { label: "Gallery", icon: <FaImages />, path: "/gallery" },
+    { label: "Reviews", icon: <FaStar />, path: "/reviews" },
+    { label: "Inquiries", icon: <FaPhone />, path: "/inquiries" },
+    { label: "Contact Us", icon: <FaEnvelope />, path: "/contact-us" },
+  ];
 
   return (
     <div>
@@ -32,202 +44,94 @@ function Header() {
         <div className="container mx-auto px-4 lg:px-8 py-4 flex items-center justify-between">
           {/* Logo Section */}
           <div
-            className="flex items-center space-x-3 cursor-pointer -ml-40"
-            onClick={() => navigateTo("/")} // Navigate to Home on logo click
+            className="flex items-center space-x-3 cursor-pointer"
+            onClick={() => navigateTo("/")}
           >
             <img
               src="https://xsdzkvctceyxhipwoaht.supabase.co/storage/v1/object/public/Images/Golden%20Horizon%20Villa%20Logo.webp?t=2024-11-27T09%3A38%3A05.191Z"
               alt="Golden Horizon Villa Logo"
-              className="w-20 h-20 object-cover rounded-full"
+              className="w-12 h-12 object-cover rounded-full"
             />
-            <h1 className="text-white text-2xl sm:text-3xl lg:text-4xl font-bold">
+            <h1 className="text-white text-2xl font-bold">
               Golden Horizon Hotel
             </h1>
           </div>
 
-          {/* Navigation Links (Desktop) */}
-          <nav className="hidden lg:flex space-x-6 text-white font-semibold mr-40">
-            <button
-              onClick={() => navigateTo("/")}
-              className="relative group transition duration-300"
-            >
-              <FaHome className="inline mr-2" />
-              <span className="hover:text-blue-300 transition duration-300">
-                Home
-              </span>
-              <span className="absolute left-0 bottom-0 w-0 group-hover:w-full h-[2px] bg-blue-300 transition-all duration-300"></span>
-            </button>
-            <button
-              onClick={() => navigateTo("/about-us")}
-              className="relative group transition duration-300"
-            >
-              <FaInfoCircle className="inline mr-2" />
-              <span className="hover:text-blue-300 transition duration-300">
-                About Us
-              </span>
-              <span className="absolute left-0 bottom-0 w-0 group-hover:w-full h-[2px] bg-blue-300 transition-all duration-300"></span>
-            </button>
-            <button
-              onClick={() => navigateTo("/rooms")}
-              className="relative group transition duration-300"
-            >
-              <FaBed className="inline mr-2" />
-              <span className="hover:text-blue-300 transition duration-300">
-                Rooms
-              </span>
-              <span className="absolute left-0 bottom-0 w-0 group-hover:w-full h-[2px] bg-blue-300 transition-all duration-300"></span>
-            </button>
-            <button
-              onClick={() => navigateTo("/gallery")}
-              className="relative group transition duration-300"
-            >
-              <FaImages className="inline mr-2" />
-              <span className="hover:text-blue-300 transition duration-300">
-                Gallery
-              </span>
-              <span className="absolute left-0 bottom-0 w-0 group-hover:w-full h-[2px] bg-blue-300 transition-all duration-300"></span>
-            </button>
-            <button
-              onClick={() => navigateTo("/reviews")}
-              className="relative group transition duration-300"
-            >
-              <FaStar className="inline mr-2" />
-              <span className="hover:text-blue-300 transition duration-300">
-                Reviews
-              </span>
-              <span className="absolute left-0 bottom-0 w-0 group-hover:w-full h-[2px] bg-blue-300 transition-all duration-300"></span>
-            </button>
-            <button
-              onClick={() => navigateTo("/inquiries")}
-              className="relative group transition duration-300"
-            >
-              <FaPhone className="inline mr-2" />
-              <span className="hover:text-blue-300 transition duration-300">
-                Inquiries
-              </span>
-              <span className="absolute left-0 bottom-0 w-0 group-hover:w-full h-[2px] bg-blue-300 transition-all duration-300"></span>
-            </button>
-            <button
-              onClick={() => navigateTo("/contact-us")}
-              className="relative group transition duration-300"
-            >
-              <FaEnvelope className="inline mr-2" />
-              <span className="hover:text-blue-300 transition duration-300">
-                Contact Us
-              </span>
-              <span className="absolute left-0 bottom-0 w-0 group-hover:w-full h-[2px] bg-blue-300 transition-all duration-300"></span>
-            </button>
-          </nav>
-
-          {/* User Section */}
-          <div className="flex items-center space-x-4">
-            <UserTag />
-          </div>
-
-          {/* Mobile Menu Toggle */}
+          {/* Hamburger Menu */}
           <button
             onClick={toggleMenu}
-            className="lg:hidden text-white focus:outline-none ml-4"
+            className="2xl:hidden text-white focus:outline-none"
             aria-label="Menu"
           >
             {isMenuOpen ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
+              <FaTimes className="w-6 h-6" />
             ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16m-7 6h7"
-                />
-              </svg>
+              <FaBars className="w-6 h-6" />
             )}
           </button>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden 2xl:flex space-x-6 text-white font-semibold">
+            {menuItems.map((item, index) => (
+              <button
+                key={index}
+                onClick={() => navigateTo(item.path)}
+                className="relative group transition duration-300 flex items-center space-x-2"
+              >
+                {item.icon}
+                <span className="group-hover:text-[#FFD700] transition duration-300">
+                  {item.label}
+                </span>
+                {/* Hover Underline */}
+                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#FFD700] group-hover:w-full transition-all duration-300"></span>
+              </button>
+            ))}
+          </nav>
+
+          {/* User Section */}
+          <div className="hidden 2xl:flex items-center space-x-4">
+            <UserTag />
+          </div>
         </div>
 
-        {/* Mobile Links */}
-        {isMenuOpen && (
-          <div className="lg:hidden bg-blue-600">
-            <ul className="space-y-4 py-4 px-4 text-white">
-              <li>
-                <button
-                  onClick={() => navigateTo("/")}
-                  className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
-                >
-                  <FaHome className="inline mr-2" /> Home
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => navigateTo("/about-us")}
-                  className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
-                >
-                  <FaInfoCircle className="inline mr-2" /> About Us
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => navigateTo("/rooms")}
-                  className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
-                >
-                  <FaBed className="inline mr-2" /> Rooms
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => navigateTo("/gallery")}
-                  className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
-                >
-                  <FaImages className="inline mr-2" /> Gallery
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => navigateTo("/reviews")}
-                  className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
-                >
-                  <FaStar className="inline mr-2" /> Reviews
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => navigateTo("/inquiries")}
-                  className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
-                >
-                  <FaPhone className="inline mr-2" /> Inquiries
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => navigateTo("/contact-us")}
-                  className="block w-full text-left hover:bg-blue-700 rounded-md px-4 py-2"
-                >
-                  <FaEnvelope className="inline mr-2" /> Contact Us
-                </button>
-              </li>
+        {/* Mobile Drawer */}
+        <div
+          className={`fixed inset-0 z-50 flex ${
+            isMenuOpen ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300 bg-transparent 2xl:hidden`}
+        >
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={toggleMenu}
+          ></div>
+
+          {/* Drawer Menu */}
+          <div className="w-64 bg-blue-600 text-white flex flex-col z-50">
+            {/* UserTag at the Top of Drawer */}
+            <div className="p-7 bg-blue-700 flex items-center justify-start space-x-3">
+              <UserTag />
+            </div>
+
+            <ul className="space-y-4 py-4 px-4">
+              {menuItems.map((item, index) => (
+                <li key={index}>
+                  <button
+                    onClick={() => navigateTo(item.path)}
+                    className="hover:text-[#FFD700] block w-full text-left hover:bg-[#1A73E8] rounded-md px-4 py-2 flex items-center space-x-3 transition duration-300"
+                  >
+                    {item.icon}
+                    <span className="hover:text-[#FFD700]">{item.label}</span>
+                  </button>
+                </li>
+              ))}
             </ul>
           </div>
-        )}
+        </div>
       </header>
+
+      {/* Render Navbar Only on Home Page */}
+      {location.pathname === "/" && <Navbar isMenuOpen={isMenuOpen} />}
     </div>
   );
 }

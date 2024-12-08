@@ -16,6 +16,7 @@ import RoomDetails from "./pages/client-page/roomPage/roomBookingPage";
 import UploadComponent from "./components/test/test3";
 import LoginPage from "./pages/login/login";
 import RegisterPage from "./pages/login/register";
+import EmailVerifyPage from "./pages/login/emailVerify";
 import { Toaster } from "react-hot-toast";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -40,6 +41,7 @@ function App() {
           <Route path="/contact-us" element={<ContactUs />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/register" element={<RegisterPage />}></Route>
+          <Route path="/verify" element={<EmailVerifyPage />}></Route>
           <Route path="/admin/*" element={<AdminPage />}></Route>
           <Route path="/test" element={<UploadComponent />}></Route>
           <Route path="/feedback" element={<FeedbackForm />}></Route>

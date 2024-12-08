@@ -1,66 +1,88 @@
-function footer() {
+function Footer() {
   return (
     <div>
-      {/* Footer Section */}
+      {/* Main Footer Section */}
       <footer className="bg-gray-800 text-white py-8">
-        {/* Address Section */}
-        <div className="container mx-auto flex flex-wrap justify-between items-start">
-          <div className="w-full sm:w-1/3 mb-4">
-            <h4 className="font-bold mb-2">Address</h4>
+        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Address Section */}
+          <div>
+            <h4 className="font-bold text-lg mb-4">Address</h4>
             <p>Hotel in Jaipur</p>
             <p>+91 123456789</p>
             <p>hotel@goldenhorizonhotel.com</p>
           </div>
-          <div className="w-full sm:w-1/3 mb-4">
-            <h4 className="font-bold mb-2">My Account</h4>
-            <ul>
-              <li>Order History</li>
-              <li>My Wishlist</li>
-              <li>Newsletter</li>
+
+          {/* My Account Section */}
+          <div>
+            <h4 className="font-bold text-lg mb-4">My Account</h4>
+            <ul className="space-y-2">
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-300 hover:text-white transition duration-300"
+                >
+                  Order History
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-300 hover:text-white transition duration-300"
+                >
+                  My Wishlist
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-300 hover:text-white transition duration-300"
+                >
+                  Newsletter
+                </a>
+              </li>
             </ul>
           </div>
-          <div className="w-full sm:w-1/3 mb-4">
-            <h4 className="font-bold mb-2">Newsletter</h4>
+
+          {/* Newsletter Section */}
+          <div>
+            <h4 className="font-bold text-lg mb-4">Newsletter</h4>
             <p>Subscribe to receive updates.</p>
-            <input
-              type="email"
-              placeholder="Your email"
-              className="p-2 rounded-md w-full mt-2"
-            />
-            <button className="bg-red-500 text-white px-4 py-2 mt-2 rounded-md hover:bg-red-700">
-              Subscribe
-            </button>
+            <div className="mt-4">
+              <input
+                type="email"
+                placeholder="Your email"
+                className="w-full p-3 rounded-md bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+              <button className="w-full mt-4 bg-red-500 text-white px-4 py-3 rounded-md hover:bg-red-600 transition duration-300">
+                Subscribe
+              </button>
+            </div>
           </div>
         </div>
       </footer>
 
-      <footer className="bg-gray-900 text-gray-300 py-6">
-        <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <aside className="flex items-center gap-3">
-            {/* Logo Image */}
+      {/* Bottom Footer Section */}
+      <footer className="bg-gray-900 text-gray-400 py-6">
+        <div className="container mx-auto flex flex-wrap justify-between items-center gap-8">
+          {/* Logo and Info */}
+          <div className="flex items-center gap-4">
             <img
               src="https://xsdzkvctceyxhipwoaht.supabase.co/storage/v1/object/public/Images/Golden%20Horizon%20Villa%20Logo.webp?t=2024-11-27T09%3A38%3A05.191Z"
               alt="Golden Horizon Hotel Logo"
-              className="w-20 h-20 object-cover rounded-full"
+              className="w-14 h-14 object-cover rounded-full"
             />
-            <p>
-              <span className="text-lg font-semibold text-white">
+            <div>
+              <p className="text-lg font-semibold text-white">
                 Golden Horizon Hotel
-              </span>
-              <br />
-              <span className="text-sm text-gray-400">
+              </p>
+              <p className="text-sm text-gray-400">
                 Providing luxury service since 2010.
-              </span>
-            </p>
-          </aside>
-
-          {/* Copyright Text */}
-          <div className="text-center text-sm">
-            <p>&copy; {new Date().getFullYear()} - All rights reserved.</p>
+              </p>
+            </div>
           </div>
 
           {/* Social Media Links */}
-          <nav className="flex items-center gap-5">
+          <nav className="flex items-center space-x-4">
             <a
               href="#"
               className="p-2 rounded-full bg-gray-800 hover:bg-red-500 transition-all duration-300"
@@ -68,8 +90,8 @@ function footer() {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 className="fill-current text-gray-300 hover:text-white"
               >
@@ -83,8 +105,8 @@ function footer() {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 className="fill-current text-gray-300 hover:text-white"
               >
@@ -98,8 +120,8 @@ function footer() {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="20"
+                height="20"
                 viewBox="0 0 24 24"
                 className="fill-current text-gray-300 hover:text-white"
               >
@@ -107,10 +129,18 @@ function footer() {
               </svg>
             </a>
           </nav>
+
+          {/* Copyright */}
+          <div className="text-sm text-center md:text-right">
+            <p>
+              &copy; {new Date().getFullYear()} Golden Horizon Hotel. All rights
+              reserved.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
   );
 }
 
-export default footer;
+export default Footer;
