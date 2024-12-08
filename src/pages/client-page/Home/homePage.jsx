@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react"; // Import useRef
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import {
   FaBed,
@@ -11,7 +12,6 @@ import {
 } from "react-icons/fa";
 import { BsFileTextFill } from "react-icons/bs";
 import Header from "../../../components/header/Header";
-import Navbar from "../../../components/header/Navbar";
 import Footer from "../../../components/footer/footer";
 import Countdown from "./countdown";
 import ImageGallery from "./imagesGallery";
@@ -32,6 +32,8 @@ export default function HomePage() {
 
   // Events
   const [events, setEvents] = useState([]);
+
+  const navigate = useNavigate(); // Initialize navigation hook
 
   // Ref for the events section
   const eventsRef = useRef(null);
@@ -79,7 +81,7 @@ export default function HomePage() {
   return (
     <>
       <Header />
-      <Navbar />
+
       {/* Hero Section */}
       <div className="relative w-full h-[600px]">
         <div className="relative w-full h-full">
@@ -201,7 +203,10 @@ export default function HomePage() {
 
             {/* Explore More Button */}
             <div className="mt-6">
-              <button className="px-6 py-3 bg-orange-500 text-white text-lg font-bold rounded-lg hover:bg-orange-600 transition">
+              <button
+                onClick={() => navigate("/gallery")}
+                className="px-6 py-3 bg-orange-500 text-white text-lg font-bold rounded-lg hover:bg-orange-600 transition"
+              >
                 Discover More
               </button>
             </div>
@@ -226,11 +231,6 @@ export default function HomePage() {
               alt="Poolside View"
               className="w-full h-full object-cover rounded-lg"
             />
-            {/* <img
-              src="https://i.pinimg.com/736x/a2/f4/0f/a2f40f17862ebe5128715d44dbd36510.jpg"
-              alt="Relaxation Area"
-              className="w-full h-full object-cover rounded-lg"
-            /> */}
           </div>
         </div>
       </div>
@@ -242,25 +242,22 @@ export default function HomePage() {
       <WhyChooseUs />
 
       {/* Upcoming Events Section */}
-      <div
-        ref={eventsRef} // Add the ref here
-        className="py-16 bg-gray-50 text-center"
-      >
-        <h2 className="text-4xl font-bold text-center mb-8 text-gray-800 flex items-center justify-center gap-4">
-          <FaCalendarAlt className="text-teal-500 text-5xl" />
+      <div ref={eventsRef} className="py-16 bg-gray-50 text-center">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-800 flex items-center justify-center gap-4">
+          <FaCalendarAlt className="text-teal-500 text-4xl md:text-5xl" />
           <span className="inline-block bg-gradient-to-r from-teal-500 to-blue-500 text-transparent bg-clip-text">
             Upcoming Events
           </span>
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 md:px-6">
           {events.map((event) => (
             <div
               key={event._id}
               className="bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300"
             >
               {/* Countdown */}
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-4 py-1 rounded-full text-xs font-semibold shadow-md z-10">
+              <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-4 py-1 rounded-full text-xs font-semibold shadow-md z-10">
                 <Countdown startDate={event.startDate} />
               </div>
 
@@ -268,17 +265,17 @@ export default function HomePage() {
               <img
                 src={event.image}
                 alt={event.name}
-                className="w-full h-48 object-cover"
+                className="w-full h-40 md:h-48 object-cover"
               />
 
               {/* Content Container */}
-              <div className="flex">
+              <div className="flex flex-col md:flex-row">
                 {/* Date Section */}
-                <div className="bg-red-500 text-white flex flex-col items-center justify-center px-4 py-6 w-28">
-                  <span className="text-3xl font-bold">
+                <div className="bg-red-500 text-white flex flex-col items-center justify-center px-4 py-6 md:w-28">
+                  <span className="text-2xl md:text-3xl font-bold">
                     {new Date(event.startDate).getDate()}
                   </span>
-                  <span className="uppercase text-sm font-semibold">
+                  <span className="uppercase text-xs md:text-sm font-semibold">
                     {new Date(event.startDate).toLocaleString("default", {
                       month: "short",
                     })}
@@ -291,20 +288,20 @@ export default function HomePage() {
                 {/* Event Details */}
                 <div className="flex-1 p-4">
                   {/* Event Name */}
-                  <h3 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                  <h3 className="text-lg md:text-2xl font-bold text-gray-800 flex items-center gap-2">
                     <FaCalendarAlt className="text-indigo-500" />
                     {event.name}
                   </h3>
 
                   {/* Event Date Range */}
-                  <p className="text-black text-sm font-semibold flex items-center gap-2 mt-3">
+                  <p className="text-black text-sm md:text-base font-semibold flex items-center gap-2 mt-2">
                     <FaClock className="text-purple-500" />
                     {new Date(event.startDate).toLocaleDateString()} -{" "}
                     {new Date(event.endDate).toLocaleDateString()}
                   </p>
 
                   {/* Event Description */}
-                  <p className="text-gray-800 mt-2 text-sm text-start flex items-start gap-2">
+                  <p className="text-gray-800 mt-3 text-sm md:text-base text-left flex items-start gap-2">
                     <BsFileTextFill className="text-green-500" size={30} />
                     {event.description}
                   </p>
@@ -314,6 +311,7 @@ export default function HomePage() {
           ))}
         </div>
       </div>
+
       <Footer />
     </>
   );

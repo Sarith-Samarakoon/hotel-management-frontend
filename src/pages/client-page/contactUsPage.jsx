@@ -6,9 +6,11 @@ import Footer from "../../components/footer/footer";
 import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt } from "react-icons/fa";
 
 function ContactUs() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Get token from localStorage (if needed for authentication)
@@ -19,29 +21,26 @@ function ContactUs() {
     window.location.href = "/login";
   }
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const contactData = {
-      name,
-      email,
-      message,
-    };
-
     axios
-      .post(`${import.meta.env.VITE_BACKEND_URL}/api/contacts`, contactData, {
+      .post(`${import.meta.env.VITE_BACKEND_URL}/api/contacts`, formData, {
         headers: {
           Authorization: `Bearer ${token}`, // Pass the token in Authorization header (if needed)
         },
       })
-      .then((response) => {
+      .then(() => {
         toast.success(
           "We received your message and will get back to you shortly"
         );
-        setName(""); // Reset form fields
-        setEmail("");
-        setMessage("");
+        setFormData({ name: "", email: "", message: "" }); // Reset form fields
       })
       .catch((error) => {
         console.error("Error submitting contact form:", error);
@@ -104,31 +103,59 @@ function ContactUs() {
             <h2 className="text-4xl font-semibold text-blue-700 mb-6">
               Send Us a Message
             </h2>
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <input
-                type="text"
-                placeholder="Your Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full border border-gray-300 p-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-              <input
-                type="email"
-                placeholder="Your Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-gray-300 p-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-              <textarea
-                placeholder="Your Message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                rows="5"
-                className="w-full border border-gray-300 p-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              ></textarea>
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-8 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg shadow-md"
+            >
+              {/* Name Field */}
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="Enter your full name"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
+                />
+              </div>
+
+              {/* Email Field */}
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Enter your email address"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
+                />
+              </div>
+
+              {/* Message Field */}
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  Your Message
+                </label>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  placeholder="Write your message here"
+                  rows="5"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  required
+                ></textarea>
+              </div>
+
+              {/* Submit Button */}
               <button
                 type="submit"
                 className={`w-full bg-blue-600 text-white py-3 rounded-md font-bold hover:bg-blue-700 transition-colors shadow-lg ${
