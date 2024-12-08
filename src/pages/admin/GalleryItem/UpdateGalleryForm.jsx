@@ -112,7 +112,7 @@ export default function UpdateGalleryItemForm() {
   };
 
   return (
-    <div className="w-full h-[100vh] flex justify-center items-center bg-gray-100">
+    <div className="w-full h-screen lg:h-[80vh] md:h-[70vh] sm:h-[60vh] flex justify-center items-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-4"

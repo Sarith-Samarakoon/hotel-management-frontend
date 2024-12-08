@@ -204,7 +204,7 @@ export default function AdminPage() {
   return (
     <div className="flex w-full h-screen overflow-hidden">
       {/* Sidebar Navigation */}
-      <div className="w-[20%] bg-gradient-to-b from-blue-600 to-blue-900 h-full flex flex-col text-white shadow-xl">
+      <div className="lg:w-[20%] w-[60%] bg-gradient-to-b from-blue-600 to-blue-900 h-screen flex flex-col text-white shadow-xl fixed lg:static z-50">
         {/* Admin Profile Section */}
         <div className="flex flex-col items-center bg-blue-700 py-6 px-4 rounded-b-xl shadow-md">
           <div className="relative w-20 h-20">
@@ -212,14 +212,13 @@ export default function AdminPage() {
               src={
                 adminProfile.image ||
                 "https://i.pinimg.com/736x/9e/83/75/9e837528f01cf3f42119c5aeeed1b336.jpg"
-              } // Dynamic or placeholder image
+              }
               alt="Admin Profile"
               className="w-full h-full rounded-full border-4 border-white shadow-lg"
             />
             {/* Presence Indicator */}
             <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-white"></span>
           </div>
-
           <h2 className="text-lg font-bold mt-4">
             {adminProfile.firstName} {adminProfile.lastName}
           </h2>
@@ -227,12 +226,12 @@ export default function AdminPage() {
         </div>
 
         {/* Sidebar Title */}
-        <div className="text-center py-4 font-bold text-xl tracking-wide bg-blue-800 shadow-md">
+        <div className="text-center py-4 font-bold text-lg tracking-wide bg-blue-800 shadow-md">
           Admin Dashboard
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex flex-col mt-6 space-y-3">
+        <nav className="mt-6 px-2 flex-1 overflow-y-auto space-y-2">
           {[
             {
               name: "Dashboard",
@@ -263,7 +262,7 @@ export default function AdminPage() {
             <Link
               to={item.link}
               key={index}
-              className={`flex items-center gap-3 px-6 py-1 text-3xl font-medium rounded-lg transition-colors ${
+              className={`flex items-center gap-3 px-6 py-2 text-xl font-medium rounded-lg transition-colors ${
                 location.pathname === item.link
                   ? "bg-blue-600 shadow-xl"
                   : "hover:bg-blue-500 hover:shadow-sm"

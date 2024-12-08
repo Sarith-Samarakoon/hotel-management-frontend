@@ -9,6 +9,7 @@ import {
   FaSearch,
   FaTimes,
 } from "react-icons/fa";
+import ReactPaginate from "react-paginate";
 import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
@@ -60,28 +61,37 @@ export default function AdminRooms() {
 
   const [rooms, setRooms] = useState([]);
   const [filteredRooms, setFilteredRooms] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 4; // Number of items per page
   const [searchQuery, setSearchQuery] = useState("");
-
-  const [roomsIsLoaded, setRoomsIsLoaded] = useState(false);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!roomsIsLoaded) {
-      axios
-        .get(import.meta.env.VITE_BACKEND_URL + "/api/rooms", {
+    fetchRooms(currentPage);
+  }, [currentPage]);
+
+  const fetchRooms = (page) => {
+    axios
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/rooms?page=${
+          page + 1
+        }&limit=${itemsPerPage}`,
+        {
           headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((res) => {
-          setRooms(res.data.rooms);
-          setFilteredRooms(res.data.rooms); // Initialize filteredRooms with all rooms
-          setRoomsIsLoaded(true);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
-  }, [roomsIsLoaded]);
+        }
+      )
+      .then((res) => {
+        setRooms(res.data.rooms);
+        setFilteredRooms(res.data.rooms); // Initialize filteredRooms with all rooms
+        setTotalPages(res.data.pagination.totalPages);
+      })
+      .catch((err) => {
+        console.error("Error fetching rooms:", err.message);
+        toast.error("Failed to fetch rooms!");
+      });
+  };
 
   const handleSearch = () => {
     const query = searchQuery.toLowerCase();
@@ -92,20 +102,18 @@ export default function AdminRooms() {
     );
   };
 
-  // Clear search
   const handleClearSearch = () => {
     setSearchQuery("");
     setFilteredRooms(rooms); // Reset to show all rooms
   };
 
-  // Trigger search on Enter key press
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleSearch();
     }
   };
 
-  function deleteRoom(roomId) {
+  const deleteRoom = (roomId) => {
     confirmAlert({
       title: "Confirm Deletion",
       message: `Are you sure you want to delete the room with ID "${roomId}"?`,
@@ -121,64 +129,55 @@ export default function AdminRooms() {
                 }
               )
               .then(() => {
-                setRoomsIsLoaded(false);
                 toast.success("Room deleted successfully!");
+                fetchRooms(currentPage); // Refresh rooms
               })
               .catch(() => {
-                toast.error("Error Deleting Room!");
+                toast.error("Error deleting room!");
               });
           },
         },
         {
           label: "No",
-          onClick: () => {
-            // Do nothing if No is clicked
-          },
         },
       ],
     });
-  }
-
-  function handlePlusClick() {
-    navigate("/admin/add-room");
-  }
+  };
 
   return (
     <div className="w-full">
       <button
-        onClick={handlePlusClick}
-        className="bg-red-600 w-[60px] h-[60px] rounded-full text-2xl text-center flex justify-center items-center fixed bottom-5 right-7"
+        onClick={() => navigate("/admin/add-room")}
+        className="bg-gradient-to-r from-pink-500 to-red-600 w-[60px] h-[60px] rounded-full text-3xl text-white flex justify-center items-center fixed bottom-5 right-5 shadow-lg transform transition-all duration-300 hover:scale-110 hover:shadow-2xl"
       >
-        <FaPlus color="white" />
+        <FaPlus />
       </button>
 
       <div className="p-4 flex justify-between items-center">
-        {/* Title */}
         <h1 className="text-4xl font-extrabold tracking-wide leading-snug shadow-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black text-white px-8 py-4 rounded-full w-[480px]">
           Rooms
         </h1>
 
-        {/* Search Bar */}
         <div className="relative flex items-center">
           <input
             type="text"
             placeholder="Search by Room ID..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)} // Update query state only
-            onKeyDown={handleKeyDown} // Trigger search on Enter
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
             className="px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 w-80"
           />
           {searchQuery ? (
             <FaTimes
               size={20}
               className="absolute top-2.5 right-4 text-black cursor-pointer"
-              onClick={handleClearSearch} // Clear search
+              onClick={handleClearSearch}
             />
           ) : (
             <FaSearch
               size={20}
               className="absolute top-2.5 right-4 text-black cursor-pointer"
-              onClick={handleSearch} // Trigger search on icon click
+              onClick={handleSearch}
             />
           )}
         </div>
@@ -208,29 +207,21 @@ export default function AdminRooms() {
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                <td className="py-4 px-6 border-b text-gray-700">
-                  {room.roomId}
-                </td>
-                <td className="py-4 px-6 border-b text-gray-700">
-                  {room.category}
-                </td>
-                <td className="py-4 px-6 border-b text-gray-700">
-                  {room.maxGuests}
-                </td>
-                <td className="py-4 px-6 border-b">
+                <td className="py-4 px-6  text-gray-700">{room.roomId}</td>
+                <td className="py-4 px-6  text-gray-700">{room.category}</td>
+                <td className="py-4 px-6  text-gray-700">{room.maxGuests}</td>
+                <td className="py-4 px-6 ">
                   {room.photos && room.photos.length > 0 ? (
                     <ImageCarousel photos={room.photos} />
                   ) : (
-                    <span>No Photos</span>
+                    "No Photos"
                   )}
                 </td>
-                <td className="py-4 px-6 border-b text-gray-700">
+                <td className="py-4 px-6  text-gray-700">
                   {room.specialDescription}
                 </td>
-                <td className="py-4 px-6 border-b text-gray-700">
-                  {room.notes}
-                </td>
-                <td className="py-4 px-6 border-b">
+                <td className="py-4 px-6  text-gray-700">{room.notes}</td>
+                <td className="py-4 px-6 ">
                   <span
                     className={`py-1 px-3 rounded-full text-white font-semibold ${
                       room.available ? "bg-green-500" : "bg-red-500"
@@ -239,19 +230,17 @@ export default function AdminRooms() {
                     {room.available ? "Available" : "Booked"}
                   </span>
                 </td>
-                <td className="py-12 px-6 border-b text-gray-700 flex space-x-2 mt-6">
+                <td className="py-4 px-6  text-gray-700 flex space-x-2 mt-10">
                   <button
-                    onClick={() => {
-                      deleteRoom(room.roomId);
-                    }}
+                    onClick={() => deleteRoom(room.roomId)}
                     className="bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 flex items-center"
                   >
                     <FaTrash className="mr-2" /> Delete
                   </button>
                   <Link
-                    className="bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 flex items-center"
                     to={"/admin/update-room"}
                     state={room}
+                    className="bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 flex items-center"
                   >
                     <FaEdit className="mr-2" /> Edit
                   </Link>
@@ -260,6 +249,25 @@ export default function AdminRooms() {
             ))}
           </tbody>
         </table>
+        <div className="flex justify-center mt-6">
+          <ReactPaginate
+            previousLabel={"← Previous"}
+            nextLabel={"Next →"}
+            breakLabel={"..."}
+            pageCount={totalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={({ selected }) => setCurrentPage(selected)}
+            containerClassName={"pagination"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
+        </div>
       </div>
     </div>
   );

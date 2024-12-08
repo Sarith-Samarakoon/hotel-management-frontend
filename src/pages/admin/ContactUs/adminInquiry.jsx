@@ -3,15 +3,18 @@ import axios from "axios";
 import { FaTrash, FaCheck, FaEdit } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { confirmAlert } from "react-confirm-alert";
+import ReactPaginate from "react-paginate";
 import "react-confirm-alert/src/react-confirm-alert.css";
 import { useNavigate, Link } from "react-router-dom";
 
 export default function InquiryPage() {
   const [inquiries, setInquiries] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
   const [editingInquiry, setEditingInquiry] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const itemsPerPage = 10; // Number of inquiries per page
 
   const token = localStorage.getItem("token");
 
@@ -24,22 +27,30 @@ export default function InquiryPage() {
 
   // Fetch inquiries
   useEffect(() => {
+    fetchInquiries(currentPage);
+  }, [currentPage]);
+
+  const fetchInquiries = (page) => {
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/api/inquiry`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/inquiry?page=${
+          page + 1
+        }&limit=${itemsPerPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((res) => {
-        setInquiries(res.data.inquiries || []);
-        setIsLoading(false);
+        setInquiries(res.data.inquiries);
+        setTotalPages(res.data.pagination.totalPages);
       })
       .catch((err) => {
         console.error("Error fetching inquiries:", err);
-        setError("Failed to load inquiries.");
-        setIsLoading(false);
+        toast.error("Failed to load inquiries.");
       });
-  }, [token]);
+  };
 
   // Delete inquiry
   function deleteInquiry(id) {
@@ -197,6 +208,25 @@ export default function InquiryPage() {
           ))}
         </tbody>
       </table>
+      <div className="flex justify-center mt-6">
+        <ReactPaginate
+          previousLabel={"← Previous"}
+          nextLabel={"Next →"}
+          breakLabel={"..."}
+          pageCount={totalPages}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={3}
+          onPageChange={({ selected }) => setCurrentPage(selected)}
+          containerClassName={"pagination"}
+          pageClassName={"page-item"}
+          pageLinkClassName={"page-link"}
+          previousClassName={"page-item"}
+          previousLinkClassName={"page-link"}
+          nextClassName={"page-item"}
+          nextLinkClassName={"page-link"}
+          activeClassName={"active"}
+        />
+      </div>
 
       {/* Modal for Editing */}
       {isModalOpen && editingInquiry && (

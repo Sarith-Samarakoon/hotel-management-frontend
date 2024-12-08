@@ -85,115 +85,125 @@ export default function AddStaffForm() {
   };
 
   return (
-    <div className="w-full h-[100vh] flex justify-center items-center bg-gray-100">
+    <div className="w-full h-screen lg:h-[80vh] md:h-[70vh] sm:h-[60vh] flex justify-center items-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-4"
+        className="bg-white p-6 rounded-lg shadow-lg w-[720px] space-y-4"
       >
-        <h1 className="text-2xl font-bold mb-4">Add New Staff Member</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">
+          Add New Staff Member
+        </h1>
 
-        {/* Name */}
-        <div>
-          <label className="block font-medium mb-1">Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter staff name"
-            required
-          />
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="space-y-4">
+            {/* Name */}
+            <div>
+              <label className="block font-medium mb-1">Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter staff name"
+                required
+              />
+            </div>
 
-        {/* Position */}
-        <div>
-          <label className="block font-medium mb-1">Position</label>
-          <input
-            type="text"
-            value={position}
-            onChange={(e) => setPosition(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter position"
-            required
-          />
-        </div>
+            {/* Position */}
+            <div>
+              <label className="block font-medium mb-1">Position</label>
+              <input
+                type="text"
+                value={position}
+                onChange={(e) => setPosition(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter position"
+                required
+              />
+            </div>
 
-        {/* Email */}
-        <div>
-          <label className="block font-medium mb-1">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter email"
-            required
-          />
-        </div>
+            {/* Email */}
+            <div>
+              <label className="block font-medium mb-1">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter email"
+                required
+              />
+            </div>
 
-        {/* Phone Number */}
-        <div>
-          <label className="block font-medium mb-1">Phone Number</label>
-          <input
-            type="text"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter phone number"
-            required
-          />
-        </div>
+            {/* Phone Number */}
+            <div>
+              <label className="block font-medium mb-1">Phone Number</label>
+              <input
+                type="text"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter phone number"
+                required
+              />
+            </div>
+          </div>
 
-        {/* Date of Joining */}
-        <div>
-          <label className="block font-medium mb-1">Date of Joining</label>
-          <input
-            type="date"
-            value={dateOfJoining}
-            onChange={(e) => setDateOfJoining(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
+          {/* Right Column */}
+          <div className="space-y-4">
+            {/* Date of Joining */}
+            <div>
+              <label className="block font-medium mb-1">Date of Joining</label>
+              <input
+                type="date"
+                value={dateOfJoining}
+                onChange={(e) => setDateOfJoining(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
 
-        {/* Employment Type */}
-        <div>
-          <label className="block font-medium mb-1">Employment Type</label>
-          <select
-            value={employmentType}
-            onChange={(e) => setEmploymentType(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          >
-            <option value="">Select employment type</option>
-            <option value="Full-Time">Full-Time</option>
-            <option value="Part-Time">Part-Time</option>
-            <option value="Contract">Contract</option>
-          </select>
-        </div>
+            {/* Employment Type */}
+            <div>
+              <label className="block font-medium mb-1">Employment Type</label>
+              <select
+                value={employmentType}
+                onChange={(e) => setEmploymentType(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select employment type</option>
+                <option value="Full-Time">Full-Time</option>
+                <option value="Part-Time">Part-Time</option>
+                <option value="Contract">Contract</option>
+              </select>
+            </div>
 
-        {/* Salary */}
-        <div>
-          <label className="block font-medium mb-1">Salary</label>
-          <input
-            type="number"
-            value={salary}
-            onChange={(e) => setSalary(Number(e.target.value))}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter salary"
-            required
-          />
-        </div>
+            {/* Salary */}
+            <div>
+              <label className="block font-medium mb-1">Salary</label>
+              <input
+                type="number"
+                value={salary}
+                onChange={(e) => setSalary(Number(e.target.value))}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter salary"
+                required
+              />
+            </div>
 
-        {/* Image */}
-        <div>
-          <label className="block font-medium mb-1">Profile Image</label>
-          <input
-            type="file"
-            onChange={(e) => setImage(e.target.files[0])}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
+            {/* Profile Image */}
+            <div>
+              <label className="block font-medium mb-1">Profile Image</label>
+              <input
+                type="file"
+                onChange={(e) => setImage(e.target.files[0])}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+          </div>
         </div>
 
         {/* Submit Button */}

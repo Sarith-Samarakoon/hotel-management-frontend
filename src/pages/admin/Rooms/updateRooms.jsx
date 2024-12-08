@@ -130,132 +130,145 @@ export default function UpdateRoomForm() {
   };
 
   return (
-    <div className="w-full h-[100vh] flex justify-center items-center bg-gray-100">
+    <div className="w-full h-screen lg:h-[130vh] md:h-[70vh] sm:h-[60vh] flex justify-center items-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-4"
+        className="bg-white p-6 rounded-lg shadow-lg w-[720px] space-y-4"
       >
-        <h1 className="text-2xl font-bold mb-4">Update Room</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">Update Room</h1>
 
-        {/* Room ID */}
-        <div>
-          <label className="block font-medium mb-1">Room ID</label>
-          <input
-            type="text"
-            value={roomId}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled
-          />
-        </div>
-
-        {/* Category */}
-        <div>
-          <label className="block font-medium mb-1">Category</label>
-          <input
-            type="text"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter category"
-            required
-          />
-        </div>
-
-        {/* Max Guests */}
-        <div>
-          <label className="block font-medium mb-1">Max Guests</label>
-          <input
-            type="number"
-            value={maxGuests}
-            onChange={(e) => setMaxGuests(Number(e.target.value))}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter maximum guests"
-            required
-          />
-        </div>
-
-        {/* Availability */}
-        <div>
-          <label className="block font-medium mb-1">Available</label>
-          <select
-            value={available}
-            onChange={(e) => setAvailable(e.target.value === "true")}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          >
-            <option value="true">Yes</option>
-            <option value="false">No</option>
-          </select>
-        </div>
-
-        {/* Special Description */}
-        <div>
-          <label className="block font-medium mb-1">Special Description</label>
-          <textarea
-            value={specialDescription}
-            onChange={(e) => setSpecialDescription(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter special description"
-            required
-          />
-        </div>
-
-        {/* Notes */}
-        <div>
-          <label className="block font-medium mb-1">Notes</label>
-          <textarea
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter notes"
-            required
-          />
-        </div>
-
-        {/* Photos */}
-        <div>
-          <label className="block font-medium mb-1">Existing Photos</label>
-          {photos.map((photo, index) => (
-            <div key={index} className="flex items-center gap-4 mt-2">
-              <img
-                src={photo}
-                alt="Room photo"
-                className="w-16 h-16 object-cover rounded-lg"
-              />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="space-y-4">
+            {/* Room ID */}
+            <div>
+              <label className="block font-medium mb-1">Room ID</label>
               <input
-                type="file"
-                onChange={(e) => handlePhotoUpdate(index, e.target.files[0])}
-                className="border px-2 py-1 rounded-lg"
+                type="text"
+                value={roomId}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled
               />
-              <button
-                type="button"
-                onClick={() => handlePhotoDelete(index)}
-                className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700"
-              >
-                Remove
-              </button>
             </div>
-          ))}
+
+            {/* Category */}
+            <div>
+              <label className="block font-medium mb-1">Category</label>
+              <input
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter category"
+                required
+              />
+            </div>
+
+            {/* Max Guests */}
+            <div>
+              <label className="block font-medium mb-1">Max Guests</label>
+              <input
+                type="number"
+                value={maxGuests}
+                onChange={(e) => setMaxGuests(Number(e.target.value))}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter maximum guests"
+                required
+              />
+            </div>
+
+            {/* Availability */}
+            <div>
+              <label className="block font-medium mb-1">Available</label>
+              <select
+                value={available}
+                onChange={(e) => setAvailable(e.target.value === "true")}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="true">Yes</option>
+                <option value="false">No</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-4">
+            {/* Special Description */}
+            <div>
+              <label className="block font-medium mb-1">
+                Special Description
+              </label>
+              <textarea
+                value={specialDescription}
+                onChange={(e) => setSpecialDescription(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter special description"
+                required
+              />
+            </div>
+
+            {/* Notes */}
+            <div>
+              <label className="block font-medium mb-1">Notes</label>
+              <textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter notes"
+                required
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Add New Photos */}
-        <div>
-          <label className="block font-medium mb-1">Add New Photos</label>
-          <input
-            type="file"
-            multiple
-            onChange={handleNewPhotoAdd}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          {newPhotos.length > 0 && (
-            <div className="mt-2">
-              {newPhotos.map((photo, index) => (
-                <span key={index} className="block text-sm">
-                  {photo.name}
-                </span>
-              ))}
-            </div>
-          )}
+        {/* Photos Section */}
+        <div className="space-y-4">
+          {/* Existing Photos */}
+          <div>
+            <label className="block font-medium mb-1">Existing Photos</label>
+            {photos.map((photo, index) => (
+              <div key={index} className="flex items-center gap-4 mt-2">
+                <img
+                  src={photo}
+                  alt="Room photo"
+                  className="w-16 h-16 object-cover rounded-lg"
+                />
+                <input
+                  type="file"
+                  onChange={(e) => handlePhotoUpdate(index, e.target.files[0])}
+                  className="border px-2 py-1 rounded-lg"
+                />
+                <button
+                  type="button"
+                  onClick={() => handlePhotoDelete(index)}
+                  className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {/* Add New Photos */}
+          <div>
+            <label className="block font-medium mb-1">Add New Photos</label>
+            <input
+              type="file"
+              multiple
+              onChange={handleNewPhotoAdd}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {newPhotos.length > 0 && (
+              <div className="mt-2">
+                {newPhotos.map((photo, index) => (
+                  <span key={index} className="block text-sm">
+                    {photo.name}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Submit Button */}

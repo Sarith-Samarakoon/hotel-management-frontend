@@ -59,7 +59,7 @@ export default function UpdateBookingForm() {
   };
 
   return (
-    <div className="w-full h-[100vh] flex justify-center items-center bg-gray-100">
+    <div className="w-full h-[70vh] flex justify-center items-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-4"

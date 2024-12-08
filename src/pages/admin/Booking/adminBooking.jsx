@@ -3,36 +3,43 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { confirmAlert } from "react-confirm-alert";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import ReactPaginate from "react-paginate";
 import "react-confirm-alert/src/react-confirm-alert.css";
 
 export default function AdminBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 10; // Items per page
 
-  // Get token from localStorage
   const token = localStorage.getItem("token");
 
-  // Redirect to login if no token is found
   if (!token) {
     window.location.href = "/login";
   }
 
   useEffect(() => {
-    fetchBookings();
-  }, []);
+    fetchBookings(currentPage);
+  }, [currentPage]);
 
-  // Fetch all bookings
-  const fetchBookings = () => {
+  const fetchBookings = (page) => {
     setLoading(true);
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/api/bookings`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Pass the token in Authorization header
-        },
-      })
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/bookings?page=${
+          page + 1
+        }&limit=${itemsPerPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         setBookings(response.data.bookings);
+        setTotalPages(response.data.pagination.totalPages);
       })
       .catch((error) => {
         console.error("Error fetching bookings:", error);
@@ -43,7 +50,6 @@ export default function AdminBookings() {
       .finally(() => setLoading(false));
   };
 
-  // Handle delete booking
   const deleteBooking = (bookingId) => {
     confirmAlert({
       title: "Confirm Deletion",
@@ -63,7 +69,7 @@ export default function AdminBookings() {
               )
               .then(() => {
                 toast.success("Booking deleted successfully!");
-                fetchBookings(); // Refresh bookings after deletion
+                fetchBookings(currentPage); // Refresh bookings after deletion
               })
               .catch((error) => {
                 console.error("Error deleting booking:", error);
@@ -73,9 +79,6 @@ export default function AdminBookings() {
         },
         {
           label: "No",
-          onClick: () => {
-            // Do nothing on cancel
-          },
         },
       ],
     });
@@ -91,75 +94,91 @@ export default function AdminBookings() {
       ) : bookings.length === 0 ? (
         <p>No bookings found.</p>
       ) : (
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead>
-            <tr className="bg-blue-600 text-white text-center">
-              <th className="px-4 py-2 border">Booking ID</th>
-              <th className="px-4 py-2 border">Room ID</th>
-              <th className="px-4 py-2 border">Email</th>
-              <th className="px-4 py-2 border">Start Date</th>
-              <th className="px-4 py-2 border">End Date</th>
-              <th className="px-4 py-2 border">Guests</th>
-              <th className="px-4 py-2 border">Notes</th>
-              <th className="px-4 py-2 border">BookedDate</th>
-              <th className="px-4 py-2 border">Status</th>
-              <th className="px-4 py-2 border">Reason</th>
-              <th className="px-4 py-2 border">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {bookings.map((booking) => (
-              <tr key={booking.bookingId} className="hover:bg-gray-100">
-                <td className="px-4 py-2 border-b text-gray-700">
-                  {booking.bookingId}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-700">
-                  {booking.roomId}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-700">
-                  {booking.email}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-700">
-                  {new Date(booking.start).toLocaleDateString()}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-700">
-                  {new Date(booking.end).toLocaleDateString()}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-700">
-                  {booking.guests}
-                </td>
-
-                <td className="px-4 py-2 border-b text-gray-700">
-                  {booking.notes || "-"}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-700">
-                  {new Date(booking.timesStamp).toLocaleString()}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-700">
-                  {booking.status || "Pending"}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-700">
-                  {booking.reason || "-"}
-                </td>
-                <td className="px-4 py-2 border-b text-gray-700 flex space-x-2">
-                  <button
-                    onClick={() => deleteBooking(booking.bookingId)}
-                    className="bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 flex items-center"
-                  >
-                    <FaTrash className="mr-2" /> Delete
-                  </button>
-                  <Link
-                    className="bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 flex items-center"
-                    to={"/admin/update-bookings"}
-                    state={booking}
-                  >
-                    <FaEdit className="mr-2" /> Edit
-                  </Link>
-                </td>
+        <div>
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr className="bg-blue-600 text-white text-center">
+                <th className="px-4 py-2 border">Booking ID</th>
+                <th className="px-4 py-2 border">Room ID</th>
+                <th className="px-4 py-2 border">Email</th>
+                <th className="px-4 py-2 border">Start Date</th>
+                <th className="px-4 py-2 border">End Date</th>
+                <th className="px-4 py-2 border">Guests</th>
+                <th className="px-4 py-2 border">Notes</th>
+                <th className="px-4 py-2 border">Booked Date</th>
+                <th className="px-4 py-2 border">Status</th>
+                <th className="px-4 py-2 border">Reason</th>
+                <th className="px-4 py-2 border">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {bookings.map((booking) => (
+                <tr key={booking.bookingId} className="hover:bg-gray-100">
+                  <td className="px-4 py-2  text-gray-700">
+                    {booking.bookingId}
+                  </td>
+                  <td className="px-4 py-2  text-gray-700">{booking.roomId}</td>
+                  <td className="px-4 py-2  text-gray-700">{booking.email}</td>
+                  <td className="px-4 py-2  text-gray-700">
+                    {new Date(booking.start).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-2  text-gray-700">
+                    {new Date(booking.end).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-2  text-gray-700">{booking.guests}</td>
+                  <td className="px-4 py-2  text-gray-700">
+                    {booking.notes || "-"}
+                  </td>
+                  <td className="px-4 py-2  text-gray-700">
+                    {new Date(booking.timesStamp).toLocaleString()}
+                  </td>
+                  <td className="px-4 py-2  text-gray-700">
+                    {booking.status || "Pending"}
+                  </td>
+                  <td className="px-4 py-2  text-gray-700">
+                    {booking.reason || "-"}
+                  </td>
+                  <td className="px-4 py-2  text-gray-700 flex space-x-2">
+                    <button
+                      onClick={() => deleteBooking(booking.bookingId)}
+                      className="bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 flex items-center"
+                    >
+                      <FaTrash className="mr-2" /> Delete
+                    </button>
+                    <Link
+                      className="bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 flex items-center"
+                      to={"/admin/update-bookings"}
+                      state={booking}
+                    >
+                      <FaEdit className="mr-2" /> Edit
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Pagination */}
+          <div className="flex justify-center mt-6">
+            <ReactPaginate
+              previousLabel={"← Previous"}
+              nextLabel={"Next →"}
+              breakLabel={"..."}
+              pageCount={totalPages}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={3}
+              onPageChange={({ selected }) => setCurrentPage(selected)}
+              containerClassName={"pagination"}
+              pageClassName={"page-item"}
+              pageLinkClassName={"page-link"}
+              previousClassName={"page-item"}
+              previousLinkClassName={"page-link"}
+              nextClassName={"page-item"}
+              nextLinkClassName={"page-link"}
+              activeClassName={"active"}
+            />
+          </div>
+        </div>
       )}
     </div>
   );

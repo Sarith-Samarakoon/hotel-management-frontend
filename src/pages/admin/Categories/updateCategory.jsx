@@ -118,112 +118,120 @@ export default function UpdateCategoryForm() {
   };
 
   return (
-    <div className="w-full h-[100vh] flex justify-center items-center bg-gray-100">
+    <div className="w-full h-screen lg:h-[80vh] md:h-[70vh] sm:h-[60vh] flex justify-center items-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-4"
+        className="bg-white p-6 rounded-lg shadow-lg w-[720px] space-y-4"
       >
-        <h1 className="text-2xl font-bold mb-4">Update Category</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">Update Category</h1>
 
-        {/* Category Name */}
-        <div>
-          <label className="block font-medium mb-1">Category Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter category name"
-            required
-            disabled
-          />
-        </div>
-
-        {/* Price */}
-        <div>
-          <label className="block font-medium mb-1">Price</label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter price"
-            required
-          />
-        </div>
-
-        {/* Bed Type */}
-        <div>
-          <label className="block font-medium mb-1">Bed Type</label>
-          <select
-            value={bedtype}
-            onChange={(e) => setBedtype(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          >
-            <option value="">Select a bed type</option>
-            <option value="Single">Single</option>
-            <option value="Double">Double</option>
-            <option value="Queen">Queen</option>
-            <option value="King">King</option>
-            <option value="Twin">Twin</option>
-          </select>
-        </div>
-
-        {/* Ratings */}
-        <div>
-          <label className="block font-medium mb-1">Ratings</label>
-          <div className="flex space-x-2">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <FaStar
-                key={star}
-                size={24}
-                className={`cursor-pointer ${
-                  (hoverRating || ratings) >= star
-                    ? "text-yellow-500"
-                    : "text-gray-300"
-                }`}
-                onClick={() => setRatings(star)}
-                onMouseEnter={() => setHoverRating(star)}
-                onMouseLeave={() => setHoverRating(0)}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="space-y-4">
+            {/* Category Name */}
+            <div>
+              <label className="block font-medium mb-1">Category Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter category name"
+                required
+                disabled
               />
-            ))}
+            </div>
+
+            {/* Price */}
+            <div>
+              <label className="block font-medium mb-1">Price</label>
+              <input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(Number(e.target.value))}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter price"
+                required
+              />
+            </div>
+
+            {/* Bed Type */}
+            <div>
+              <label className="block font-medium mb-1">Bed Type</label>
+              <select
+                value={bedtype}
+                onChange={(e) => setBedtype(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="">Select a bed type</option>
+                <option value="Single">Single</option>
+                <option value="Double">Double</option>
+                <option value="Queen">Queen</option>
+                <option value="King">King</option>
+                <option value="Twin">Twin</option>
+              </select>
+            </div>
+
+            {/* Ratings */}
+            <div>
+              <label className="block font-medium mb-1">Ratings</label>
+              <div className="flex space-x-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <FaStar
+                    key={star}
+                    size={24}
+                    className={`cursor-pointer ${
+                      (hoverRating || ratings) >= star
+                        ? "text-yellow-500"
+                        : "text-gray-300"
+                    }`}
+                    onClick={() => setRatings(star)}
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Features */}
-        <div>
-          <label className="block font-medium mb-1">Features</label>
-          <input
-            type="text"
-            value={features}
-            onChange={(e) => setFeatures(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter features (comma-separated)"
-            required
-          />
-        </div>
+          {/* Right Column */}
+          <div className="space-y-4">
+            {/* Features */}
+            <div>
+              <label className="block font-medium mb-1">Features</label>
+              <input
+                type="text"
+                value={features}
+                onChange={(e) => setFeatures(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter features (comma-separated)"
+                required
+              />
+            </div>
 
-        {/* Description */}
-        <div>
-          <label className="block font-medium mb-1">Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter description"
-            required
-          />
-        </div>
+            {/* Description */}
+            <div>
+              <label className="block font-medium mb-1">Description</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter description"
+                required
+              />
+            </div>
 
-        {/* Image */}
-        <div>
-          <label className="block font-medium mb-1">Image</label>
-          <input
-            type="file"
-            onChange={(e) => setImage(e.target.files[0])}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            {/* Image */}
+            <div>
+              <label className="block font-medium mb-1">Image</label>
+              <input
+                type="file"
+                onChange={(e) => setImage(e.target.files[0])}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Submit Button */}

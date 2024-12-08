@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import ReactPaginate from "react-paginate";
 
 export default function AdminGalleryItems() {
   const token = localStorage.getItem("token");
@@ -12,24 +13,34 @@ export default function AdminGalleryItems() {
     window.location.href = "/login";
   }
   const [galleryItems, setGalleryItems] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [galleryIsLoaded, setGalleryIsLoaded] = useState(false);
+  const [galleryCurrentPage, setGalleryCurrentPage] = useState(0);
+  const [galleryTotalPages, setGalleryTotalPages] = useState(1);
+  const galleryItemsPerPage = 5; // Items per page for gallery
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoaded) {
-      axios
-        .get(import.meta.env.VITE_BACKEND_URL + "/api/gallery/")
-        .then((res) => {
-          setGalleryItems(res.data.list);
-          setIsLoaded(true);
-        })
-        .catch((err) => {
-          console.error("Error fetching gallery items:", err.message);
-          toast.error("Failed to fetch gallery items!");
-        });
-    }
-  }, [isLoaded]);
+    fetchGalleryItems(galleryCurrentPage);
+  }, [galleryCurrentPage]);
+
+  const fetchGalleryItems = (page) => {
+    axios
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/gallery?page=${
+          page + 1
+        }&limit=${galleryItemsPerPage}`
+      )
+      .then((res) => {
+        setGalleryItems(res.data.list);
+        setGalleryTotalPages(res.data.pagination.totalPages);
+        setGalleryIsLoaded(true);
+      })
+      .catch((err) => {
+        console.error("Error fetching gallery items:", err.message);
+        toast.error("Failed to fetch gallery items!");
+      });
+  };
 
   function deleteGalleryItem(id) {
     confirmAlert({
@@ -74,9 +85,9 @@ export default function AdminGalleryItems() {
     <div className="w-full">
       <button
         onClick={handlePlusClick}
-        className="bg-red-600 w-[60px] h-[60px] rounded-full text-2xl text-center flex justify-center items-center fixed bottom-5 right-7"
+        className="bg-gradient-to-r from-pink-500 to-red-600 w-[60px] h-[60px] rounded-full text-3xl text-white flex justify-center items-center fixed bottom-5 right-5 shadow-lg transform transition-all duration-300 hover:scale-110 hover:shadow-2xl"
       >
-        <FaPlus color="white" />
+        <FaPlus />
       </button>
       <div className="p-4">
         <h1 className="text-4xl font-extrabold mb-8  tracking-wide leading-snug shadow-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black text-white px-8 py-4 rounded-full w-[480px]">
@@ -131,6 +142,25 @@ export default function AdminGalleryItems() {
             ))}
           </tbody>
         </table>
+        <div className="flex justify-center mt-6">
+          <ReactPaginate
+            previousLabel={"← Previous"}
+            nextLabel={"Next →"}
+            breakLabel={"..."}
+            pageCount={galleryTotalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={({ selected }) => setGalleryCurrentPage(selected)}
+            containerClassName={"pagination"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
+        </div>
       </div>
     </div>
   );

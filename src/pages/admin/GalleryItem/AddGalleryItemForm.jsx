@@ -96,7 +96,7 @@ export default function AddGalleryItemForm() {
   }
 
   return (
-    <div className="w-full h-[100vh] flex justify-center items-center">
+    <div className="w-full h-screen lg:h-[80vh] md:h-[70vh] sm:h-[60vh] flex justify-center items-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md p-8 space-y-4 bg-white rounded shadow-lg"

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { format } from "date-fns";
-import { FaTrash, FaEdit, FaCheckCircle } from "react-icons/fa";
+import { FaTrash, FaCheckCircle } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
+import ReactPaginate from "react-paginate";
 import "react-confirm-alert/src/react-confirm-alert.css";
 
 export default function AdminMessages() {
@@ -14,27 +15,37 @@ export default function AdminMessages() {
   }
 
   const [messages, setMessages] = useState([]);
-  const [messagesIsLoaded, setMessagesIsLoaded] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 10; // Number of messages per page
 
-  const navigate = useNavigate(); // Initialize navigation hook
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!messagesIsLoaded) {
-      axios
-        .get(import.meta.env.VITE_BACKEND_URL + "/api/contacts", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((res) => {
-          setMessages(res.data.messages);
-          setMessagesIsLoaded(true);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
-  }, [messagesIsLoaded]);
+    fetchMessages(currentPage);
+  }, [currentPage]);
 
-  function deleteMessage(id) {
+  const fetchMessages = (page) => {
+    axios
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/contacts?page=${
+          page + 1
+        }&limit=${itemsPerPage}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((res) => {
+        setMessages(res.data.messages);
+        setTotalPages(res.data.pagination.totalPages);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to fetch messages!");
+      });
+  };
+
+  const deleteMessage = (id) => {
     confirmAlert({
       title: "Confirm Deletion",
       message: `Are you sure you want to delete this message?`,
@@ -44,15 +55,13 @@ export default function AdminMessages() {
           onClick: () => {
             axios
               .delete(
-                import.meta.env.VITE_BACKEND_URL + "/api/contacts/" + id,
+                `${import.meta.env.VITE_BACKEND_URL}/api/contacts/${id}`,
                 {
-                  headers: {
-                    Authorization: "Bearer " + token,
-                  },
+                  headers: { Authorization: `Bearer ${token}` },
                 }
               )
               .then(() => {
-                setMessagesIsLoaded(false);
+                fetchMessages(currentPage); // Refresh messages after deletion
                 toast.success("Message deleted successfully!");
               })
               .catch(() => {
@@ -62,34 +71,30 @@ export default function AdminMessages() {
         },
         {
           label: "No",
-          onClick: () => {
-            // Do nothing if No is clicked
-          },
         },
       ],
     });
-  }
+  };
 
-  function toggleReadStatus(id) {
+  const toggleReadStatus = (id) => {
     axios
       .put(
-        import.meta.env.VITE_BACKEND_URL +
-          "/api/contacts/toggle-read-status/" +
-          id,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/contacts/toggle-read-status/${id}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       )
       .then(() => {
-        setMessagesIsLoaded(false);
+        fetchMessages(currentPage); // Refresh messages after status update
         toast.success("Message status updated successfully!");
-        navigate("/admin/contact");
       })
       .catch(() => {
         toast.error("Error updating message status!");
       });
-  }
+  };
 
   return (
     <div className="w-full">
@@ -108,7 +113,6 @@ export default function AdminMessages() {
             User Inquiries
           </button>
         </div>
-
         <table className="min-w-full bg-white rounded-lg shadow-lg overflow-hidden">
           <thead>
             <tr className="bg-blue-600 text-white text-left">
@@ -140,13 +144,11 @@ export default function AdminMessages() {
                 <td className="py-4 px-6 border-b text-gray-700">
                   {(() => {
                     const parsedDate = new Date(message.createdAt);
-                    if (isNaN(parsedDate.getTime())) {
-                      return "Invalid Date";
-                    }
-                    return format(parsedDate, "MM/dd/yyyy hh:mm a");
+                    return !isNaN(parsedDate.getTime())
+                      ? format(parsedDate, "MM/dd/yyyy hh:mm a")
+                      : "Invalid Date";
                   })()}
                 </td>
-
                 <td className="py-4 px-6 border-b text-gray-700">
                   {message.read ? (
                     <span className="text-green-500">Read</span>
@@ -173,6 +175,25 @@ export default function AdminMessages() {
             ))}
           </tbody>
         </table>
+        <div className="flex justify-center mt-6">
+          <ReactPaginate
+            previousLabel={"← Previous"}
+            nextLabel={"Next →"}
+            breakLabel={"..."}
+            pageCount={totalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={({ selected }) => setCurrentPage(selected)}
+            containerClassName={"pagination"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
+        </div>
       </div>
     </div>
   );

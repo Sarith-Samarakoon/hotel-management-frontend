@@ -4,6 +4,7 @@ import { FaTrash, FaEdit, FaPlus, FaStar } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
 import { confirmAlert } from "react-confirm-alert";
+import ReactPaginate from "react-paginate";
 import "react-confirm-alert/src/react-confirm-alert.css";
 
 export default function AdminCategories() {
@@ -14,24 +15,40 @@ export default function AdminCategories() {
 
   const [categories, setCategories] = useState([]);
   const [categoriesIsLoaded, setCategoriesIsLoaded] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 3; // Number of categories per page
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!categoriesIsLoaded) {
-      axios
-        .get(import.meta.env.VITE_BACKEND_URL + "/api/category")
-        .then((res) => {
-          setCategories(res.data.categories);
-          setCategoriesIsLoaded(true);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
-  }, [categoriesIsLoaded]);
+    fetchCategories(currentPage);
+  }, [currentPage]);
 
-  function deleteCategory(name) {
+  const fetchCategories = (page) => {
+    axios
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/category?page=${
+          page + 1
+        }&limit=${itemsPerPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        setCategories(res.data.categories);
+        setTotalPages(res.data.pagination.totalPages);
+        setCategoriesIsLoaded(true);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Failed to fetch categories!");
+      });
+  };
+
+  const deleteCategory = (name) => {
     confirmAlert({
       title: "Confirm Deletion",
       message: `Are you sure you want to delete the category "${name}"?`,
@@ -41,7 +58,7 @@ export default function AdminCategories() {
           onClick: () => {
             axios
               .delete(
-                import.meta.env.VITE_BACKEND_URL + "/api/category/" + name,
+                `${import.meta.env.VITE_BACKEND_URL}/api/category/${name}`,
                 {
                   headers: {
                     Authorization: "Bearer " + token,
@@ -49,7 +66,7 @@ export default function AdminCategories() {
                 }
               )
               .then(() => {
-                setCategoriesIsLoaded(false);
+                fetchCategories(currentPage);
                 toast.success("Category deleted successfully!");
               })
               .catch(() => {
@@ -59,28 +76,24 @@ export default function AdminCategories() {
         },
         {
           label: "No",
-          onClick: () => {
-            // Do nothing if No is clicked
-          },
         },
       ],
     });
-  }
+  };
 
-  function handlePlusClick() {
+  const handlePlusClick = () => {
     navigate("/admin/add-category");
-  }
+  };
 
   return (
     <div className="w-full">
       <button
-        onClick={() => {
-          handlePlusClick();
-        }}
-        className="bg-red-600 w-[60px] h-[60px] rounded-full text-2xl text-center flex justify-center items-center fixed bottom-5 right-7"
+        onClick={handlePlusClick}
+        className="bg-gradient-to-r from-pink-500 to-red-600 w-[60px] h-[60px] rounded-full text-3xl text-white flex justify-center items-center fixed bottom-5 right-5 shadow-lg transform transition-all duration-300 hover:scale-110 hover:shadow-2xl"
       >
-        <FaPlus color="white" />
+        <FaPlus />
       </button>
+
       <div className="p-4">
         <h1 className="text-4xl font-extrabold mb-8 tracking-wide leading-snug shadow-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black text-white px-8 py-4 rounded-full w-[480px]">
           Categories
@@ -106,42 +119,33 @@ export default function AdminCategories() {
                   index % 2 === 0 ? "bg-gray-50" : "bg-white"
                 }`}
               >
-                <td className="py-4 px-6 border-b text-gray-700">
-                  {category.name}
-                </td>
-                <td className="py-4 px-6 border-b text-gray-700">
-                  ${category.price}
-                </td>
-                <td className="py-4 px-6 border-b text-gray-700">
-                  {category.bedtype}
-                </td>
-                <td className="py-4 px-6 border-b text-gray-700">
+                <td className="py-4 px-6  text-gray-700">{category.name}</td>
+                <td className="py-4 px-6  text-gray-700">${category.price}</td>
+                <td className="py-4 px-6  text-gray-700">{category.bedtype}</td>
+                <td className="py-4 px-6  text-gray-700">
                   {category.features.join(", ")}
                 </td>
-                <td className="py-4 px-6 border-b text-gray-700">
+                <td className="py-4 px-6  text-gray-700">
                   {category.description}
                 </td>
-                <td className="py-4 px-6 border-b text-yellow-500 flex">
-                  {/* Render stars based on the rating */}
+                <td className="py-4 px-6  text-yellow-500 flex mt-8">
                   {Array(5)
                     .fill()
                     .map((_, i) => (
                       <FaStar
                         key={i}
                         className={
-                          i < Math.round(category.ratings || 0) // Use a default value of 0 if ratings is undefined
+                          i < Math.round(category.ratings || 0)
                             ? "text-yellow-500"
                             : "text-gray-300"
                         }
                       />
                     ))}
                   <span className="ml-2 text-sm text-gray-500">
-                    ({(category.ratings || 0).toFixed(1)}){" "}
-                    {/* Ensure ratings is defined */}
+                    ({(category.ratings || 0).toFixed(1)})
                   </span>
                 </td>
-
-                <td className="py-4 px-6 border-b">
+                <td className="py-4 px-6 ">
                   {category.image ? (
                     <img
                       src={category.image}
@@ -152,11 +156,9 @@ export default function AdminCategories() {
                     "No Image"
                   )}
                 </td>
-                <td className="py-4 px-6 border-b text-gray-700 flex space-x-2">
+                <td className="py-4 px-6  text-gray-700 flex space-x-2">
                   <button
-                    onClick={() => {
-                      deleteCategory(category.name);
-                    }}
+                    onClick={() => deleteCategory(category.name)}
                     className="bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 flex items-center"
                   >
                     <FaTrash className="mr-2" /> Delete
@@ -173,6 +175,25 @@ export default function AdminCategories() {
             ))}
           </tbody>
         </table>
+        <div className="flex justify-center mt-6">
+          <ReactPaginate
+            previousLabel={"← Previous"}
+            nextLabel={"Next →"}
+            breakLabel={"..."}
+            pageCount={totalPages}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={3}
+            onPageChange={({ selected }) => setCurrentPage(selected)}
+            containerClassName={"pagination"}
+            pageClassName={"page-item"}
+            pageLinkClassName={"page-link"}
+            previousClassName={"page-item"}
+            previousLinkClassName={"page-link"}
+            nextClassName={"page-item"}
+            nextLinkClassName={"page-link"}
+            activeClassName={"active"}
+          />
+        </div>
       </div>
     </div>
   );

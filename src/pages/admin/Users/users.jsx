@@ -192,7 +192,7 @@ export default function AdminUsers() {
                 <td className="py-1 px-2 border-b text-gray-700">
                   {user.emailVerified ? "Yes" : "No"}
                 </td>
-                <td className="py-1 px-2 border-b text-gray-700 flex space-x-2">
+                <td className="py-1 px-2 border-b text-gray-700 flex space-x-2 mt-2">
                   {/* Toggle Button */}
                   <label className="flex items-center space-x-3 cursor-pointer">
                     <span className="text-sm text-gray-700">

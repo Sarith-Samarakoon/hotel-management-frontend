@@ -74,71 +74,82 @@ export default function AddEventForm() {
   };
 
   return (
-    <div className="w-full h-[100vh] flex justify-center items-center bg-gray-100">
+    <div className="w-full h-screen lg:h-[80vh] md:h-[70vh] sm:h-[60vh] flex justify-center items-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-4"
+        className="bg-white p-6 rounded-lg shadow-lg w-[720px] space-y-4"
       >
-        <h1 className="text-2xl font-bold mb-4">Add New Event</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">Add New Event</h1>
 
-        {/* Event Name */}
-        <div>
-          <label className="block font-medium mb-1">Event Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter event name"
-            required
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Left Column */}
+          <div className="space-y-4">
+            {/* Event Name */}
+            <div>
+              <label className="block font-medium mb-1">Event Name</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter event name"
+                required
+              />
+            </div>
+
+            {/* Start Date */}
+            <div>
+              <label className="block font-medium mb-1">Start Date</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-4">
+            {/* End Date */}
+            <div>
+              <label className="block font-medium mb-1">End Date</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+
+            {/* Image */}
+            <div>
+              <label className="block font-medium mb-1">Image</label>
+              <input
+                type="file"
+                onChange={(e) => setImage(e.target.files[0])}
+                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+          </div>
         </div>
 
-        {/* Start Date */}
-        <div>
-          <label className="block font-medium mb-1">Start Date</label>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        {/* End Date */}
-        <div>
-          <label className="block font-medium mb-1">End Date</label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
-        </div>
-
-        {/* Description */}
-        <div>
-          <label className="block font-medium mb-1">Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter event description"
-            required
-          />
-        </div>
-
-        {/* Image */}
-        <div>
-          <label className="block font-medium mb-1">Image</label>
-          <input
-            type="file"
-            onChange={(e) => setImage(e.target.files[0])}
-            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            required
-          />
+        {/* Full Width Section */}
+        <div className="space-y-4">
+          {/* Description */}
+          <div>
+            <label className="block font-medium mb-1">Description</label>
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter event description"
+              required
+            />
+          </div>
         </div>
 
         {/* Submit Button */}

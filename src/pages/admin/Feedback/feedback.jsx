@@ -2,45 +2,58 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { FaTrash, FaReply, FaStar, FaCheck } from "react-icons/fa";
+import ReactPaginate from "react-paginate";
 import toast from "react-hot-toast";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 
 export default function AdminFeedback() {
   const [feedbacks, setFeedbacks] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const token = localStorage.getItem("token");
 
-  // Redirect to login if no token is found
   if (!token) {
     window.location.href = "/login";
   }
 
   const navigate = useNavigate();
 
+  const itemsPerPage = 5; // Number of feedbacks per page
+
   // Fetch feedback data
   useEffect(() => {
+    fetchFeedback(currentPage);
+  }, [currentPage]);
+
+  const fetchFeedback = (page) => {
+    setIsLoading(true);
     axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/api/feedback`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Pass token in the Authorization header
-        },
-      })
+      .get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/feedback?page=${
+          page + 1
+        }&limit=${itemsPerPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((res) => {
-        setFeedbacks(res.data.feedback || []); // Ensure data is always an array
+        setFeedbacks(res.data.feedback || []);
+        setTotalPages(res.data.pagination.totalPages);
         setIsLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching feedback:", err);
-        setError("Failed to load feedback.");
+        toast.error("Failed to load feedback.");
         setIsLoading(false);
       });
-  }, [token]);
+  };
 
-  // Handle feedback deletion
-  function deleteFeedback(id) {
+  const deleteFeedback = (id) => {
     confirmAlert({
       title: "Confirm Deletion",
       message: "Are you sure you want to delete this feedback?",
@@ -58,9 +71,7 @@ export default function AdminFeedback() {
                 }
               )
               .then(() => {
-                setFeedbacks((prev) =>
-                  prev.filter((feedback) => feedback._id !== id)
-                );
+                fetchFeedback(currentPage);
                 toast.success("Feedback deleted successfully!");
               })
               .catch(() => {
@@ -73,10 +84,9 @@ export default function AdminFeedback() {
         },
       ],
     });
-  }
+  };
 
-  // Toggle responded status
-  function toggleResponded(feedback) {
+  const toggleResponded = (feedback) => {
     const updatedRespondedStatus = !feedback.responded;
 
     axios
@@ -90,13 +100,7 @@ export default function AdminFeedback() {
         }
       )
       .then(() => {
-        setFeedbacks((prev) =>
-          prev.map((fb) =>
-            fb._id === feedback._id
-              ? { ...fb, responded: updatedRespondedStatus }
-              : fb
-          )
-        );
+        fetchFeedback(currentPage);
         toast.success(
           `Feedback marked as ${
             updatedRespondedStatus ? "responded" : "not responded"
@@ -107,14 +111,10 @@ export default function AdminFeedback() {
         console.error("Error toggling responded status:", err);
         toast.error("Failed to update responded status.");
       });
-  }
+  };
 
   if (isLoading) {
     return <div className="p-4">Loading feedback...</div>;
-  }
-
-  if (error) {
-    return <div className="p-4 text-red-500">{error}</div>;
   }
 
   return (
@@ -130,7 +130,6 @@ export default function AdminFeedback() {
             <th className="py-2 px-5 border-b font-medium">Room ID</th>
             <th className="py-2 px-5 border-b font-medium">Rating</th>
             <th className="py-2 px-5 border-b font-medium">Message</th>
-            <th className="py-2 px-5 border-b font-medium">Response</th>
             <th className="py-2 px-5 border-b font-medium">Responded</th>
             <th className="py-2 px-5 border-b font-medium">Actions</th>
           </tr>
@@ -141,7 +140,6 @@ export default function AdminFeedback() {
               key={feedback._id}
               className="hover:bg-gray-100 bg-white border-b"
             >
-              {/* Profile Image */}
               <td className="px-2 py-1">
                 <img
                   src={feedback.userProfileImage}
@@ -149,61 +147,21 @@ export default function AdminFeedback() {
                   className="w-12 h-12 object-cover rounded-full shadow-md"
                 />
               </td>
-              {/* User Info */}
               <td className="px-2 py-1">
                 <p className="font-bold text-gray-700">{feedback.userName}</p>
                 <p className="text-sm text-gray-500">{feedback.userEmail}</p>
               </td>
-              {/* Room ID */}
               <td className="px-2 py-1 text-gray-700">{feedback.roomId}</td>
-              {/* Rating */}
               <td className="px-2 py-1 flex items-center text-yellow-500">
                 {Array.from({ length: feedback.rating }).map((_, i) => (
-                  <FaStar key={i} className="text-yellow-500" />
+                  <FaStar key={i} />
                 ))}
               </td>
-              {/* Message */}
               <td className="px-2 py-1 text-gray-700">{feedback.message}</td>
-              {/* Admin Response */}
               <td className="px-2 py-1 text-gray-700">
-                {feedback.adminResponse ? (
-                  <p>{feedback.adminResponse}</p>
-                ) : (
-                  <span className="text-red-500">No Response</span>
-                )}
+                {feedback.responded ? "Yes" : "No"}
               </td>
-              {/* Responded Status */}
-
-              <td className="px-2 py-1 flex-col items-center">
-                {/* Switch */}
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="sr-only peer"
-                    checked={feedback.responded}
-                    onChange={() => toggleResponded(feedback)}
-                  />
-                  <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 rounded-full peer peer-checked:bg-green-500">
-                    <div
-                      className={`w-5 h-5 mt-0.5 ml-0.5 bg-white rounded-full shadow-md transform transition-all ${
-                        feedback.responded ? "translate-x-5" : "translate-x-0"
-                      }`}
-                    ></div>
-                  </div>
-                </label>
-                <br />
-                {/* Status Text */}
-                <span
-                  className={`mt-2 text-sm font-bold ${
-                    feedback.responded ? "text-green-600" : "text-red-500"
-                  }`}
-                >
-                  {feedback.responded ? "Responded" : "Not Responded"}
-                </span>
-              </td>
-
-              {/* Actions */}
-              <td className="px-2 py-1 flex space-x-2">
+              <td className="px-2 py-1 flex space-x-2 mt-1">
                 <button
                   onClick={() => deleteFeedback(feedback._id)}
                   className="bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 flex items-center"
@@ -223,6 +181,25 @@ export default function AdminFeedback() {
           ))}
         </tbody>
       </table>
+      <div className="flex justify-center mt-6">
+        <ReactPaginate
+          previousLabel={"← Previous"}
+          nextLabel={"Next →"}
+          breakLabel={"..."}
+          pageCount={totalPages}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={3}
+          onPageChange={({ selected }) => setCurrentPage(selected)}
+          containerClassName={"pagination"}
+          pageClassName={"page-item"}
+          pageLinkClassName={"page-link"}
+          previousClassName={"page-item"}
+          previousLinkClassName={"page-link"}
+          nextClassName={"page-item"}
+          nextLinkClassName={"page-link"}
+          activeClassName={"active"}
+        />
+      </div>
     </div>
   );
 }
