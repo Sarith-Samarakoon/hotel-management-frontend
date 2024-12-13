@@ -21,6 +21,15 @@ export default function RoomBooking() {
   const { category, rooms } = state || {};
   const [selectedRoom, setSelectedRoom] = useState(null); // State for the selected room
   const [isBookingOpen, setIsBookingOpen] = useState(false); // State to toggle booking form
+  const [filter, setFilter] = useState("all"); // State to manage filters
+
+  // Filtered rooms based on the filter state
+  const filteredRooms =
+    filter === "all"
+      ? rooms
+      : rooms.filter((room) =>
+          filter === "available" ? room.available : !room.available
+        );
 
   // Handle case where no data is passed
   if (!category || !rooms) {
@@ -56,50 +65,88 @@ export default function RoomBooking() {
   };
 
   return (
-    <div className="w-full bg-gray-50 min-h-screen">
+    <div className="w-full bg-gray-50 min-h-screen bg-gradient-to-r from-indigo-100 via-blue-200 to-purple-200">
       <Header />
       <div className="p-10">
         {/* Category Header */}
         <div className="bg-white shadow-md rounded-lg p-6 mb-10">
-          <h1 className="text-5xl font-bold text-gray-800 mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 mb-4">
             {category.name}
           </h1>
-          <p className="text-lg text-gray-600">{category.description}</p>
-          <div className="flex items-center space-x-6 mt-6">
-            <div className="flex items-center text-gray-700">
-              <FaTag className="text-indigo-500 mr-2" />
-              <span className="text-sm">{category.features.join(", ")}</span>
+          <p className="text-sm sm:text-md md:text-lg text-gray-600">
+            {category.description}
+          </p>
+          <div className="flex flex-wrap items-center space-y-4 sm:space-y-0 sm:space-x-6 mt-6">
+            <div className="flex items-center text-gray-700 w-full sm:w-auto">
+              <FaTag className="text-indigo-500 mr-2 text-lg sm:text-base" />
+              <span className="text-sm sm:text-md">
+                {category.features.join(", ")}
+              </span>
             </div>
-            <div className="flex items-center text-gray-700">
-              <FaDollarSign className="text-green-500 mr-2" />
-              <span className="text-sm font-semibold">
+            <div className="flex items-center text-gray-700 w-full sm:w-auto">
+              <FaDollarSign className="text-green-500 mr-2 text-lg sm:text-base" />
+              <span className="text-sm sm:text-md font-semibold">
                 ${category.price} / night
               </span>
             </div>
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center w-full sm:w-auto space-x-1">
               {Array(5)
                 .fill()
                 .map((_, i) => (
                   <FaStar
                     key={i}
-                    className={
+                    className={`text-base ${
                       i < Math.round(category.ratings || 0)
                         ? "text-yellow-400"
                         : "text-gray-300"
-                    }
+                    }`}
                   />
                 ))}
             </div>
           </div>
         </div>
 
+        {/* Filter Section */}
+        <div className="flex justify-center space-x-4 mb-8">
+          <button
+            onClick={() => setFilter("all")}
+            className={`py-2 px-4 text-lg font-semibold rounded-lg transition-all ${
+              filter === "all"
+                ? "bg-indigo-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            All Rooms
+          </button>
+          <button
+            onClick={() => setFilter("available")}
+            className={`py-2 px-4 text-lg font-semibold rounded-lg transition-all ${
+              filter === "available"
+                ? "bg-green-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Available Rooms
+          </button>
+          <button
+            onClick={() => setFilter("booked")}
+            className={`py-2 px-4 text-lg font-semibold rounded-lg transition-all ${
+              filter === "booked"
+                ? "bg-red-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+            }`}
+          >
+            Booked Rooms
+          </button>
+        </div>
+
         {/* Rooms Section */}
         <h2 className="text-4xl font-bold text-gray-800 mb-6">
-          {rooms.length > 0 ? "Available Rooms" : "No Rooms Available"}
+          {filteredRooms.length > 0 ? "Available Rooms" : "No Rooms Available"}
         </h2>
-        {rooms.length > 0 ? (
+        {filteredRooms.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {rooms.map((room, index) => (
+            {filteredRooms.map((room, index) => (
               <div
                 key={index}
                 className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"

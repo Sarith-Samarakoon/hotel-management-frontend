@@ -17,7 +17,7 @@ export default function AdminCategories() {
   const [categoriesIsLoaded, setCategoriesIsLoaded] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 3; // Number of categories per page
+  const itemsPerPage = 5; // Number of categories per page
 
   const navigate = useNavigate();
 

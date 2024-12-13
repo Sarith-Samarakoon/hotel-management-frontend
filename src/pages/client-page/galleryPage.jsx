@@ -72,7 +72,7 @@ export default function Gallery() {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col">
+    <div className="w-full min-h-screen flex flex-col bg-gradient-to-r from-indigo-100 via-blue-200 to-purple-200">
       <Header />
       <div className="flex-grow">
         {/* Gallery Section */}

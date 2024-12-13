@@ -92,7 +92,7 @@ export default function HomePage() {
       <Header />
 
       {/* Hero Section */}
-      <div className="relative w-full h-[600px]">
+      <div className="relative w-full h-[600px] ">
         <div className="relative w-full h-full">
           <img
             src={images[currentIndex]}

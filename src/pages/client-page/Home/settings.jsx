@@ -52,7 +52,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="w-full min-h-screen bg-gradient-to-r from-gray-100 to-gray-200">
+    <div className="w-full min-h-screen bg-gradient-to-r from-indigo-100 via-blue-200 to-purple-200">
       <Header />
       <div className="py-10">
         <div className="bg-white rounded-xl shadow-lg max-w-lg mx-auto p-8">

@@ -111,7 +111,7 @@ export default function MyBookedRooms() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-r from-indigo-100 via-blue-200 to-purple-200">
       <Header />
       <div className="container mx-auto py-10">
         <h1 className="text-4xl font-extrabold text-center text-blue-800 mb-8">
