@@ -63,7 +63,7 @@ export default function AdminRooms() {
   const [filteredRooms, setFilteredRooms] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const itemsPerPage = 4; // Number of items per page
+  const itemsPerPage = 10; // Number of items per page
   const [searchQuery, setSearchQuery] = useState("");
 
   const navigate = useNavigate();
@@ -96,8 +96,10 @@ export default function AdminRooms() {
   const handleSearch = () => {
     const query = searchQuery.toLowerCase();
     setFilteredRooms(
-      rooms.filter((room) =>
-        room.roomId.toString().toLowerCase().includes(query)
+      rooms.filter(
+        (room) =>
+          room.roomId.toString().toLowerCase().includes(query) || // Search by roomId
+          room.category.toLowerCase().includes(query) // Search by category
       )
     );
   };

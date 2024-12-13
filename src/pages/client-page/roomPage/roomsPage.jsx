@@ -123,7 +123,7 @@ export default function Rooms() {
               <Slider
                 range
                 min={0}
-                max={1000}
+                max={2000}
                 value={priceRange}
                 onChange={(value) => setPriceRange(value)}
                 className="mt-2"
@@ -250,7 +250,7 @@ export default function Rooms() {
           </div>
 
           {/* Pagination Controls */}
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-8 py-3 bg-white">
             <ReactPaginate
               previousLabel={"← Previous"}
               nextLabel={"Next →"}
