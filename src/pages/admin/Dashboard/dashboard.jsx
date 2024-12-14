@@ -46,44 +46,62 @@ export default function Dashboard() {
           {
             label: "Total Bookings",
             value: bookings,
-            percentage: (bookings / 100) * 75, // Example scaling logic
-            gradient: "bg-gradient-to-r from-blue-500 to-blue-700",
-            icon: <FaClipboardList size={35} />,
+            percentage: (bookings / 100) * 75, // Scale to 75%
+            percentageDescription: `${((bookings / 100) * 75).toFixed(
+              1
+            )}% of booking capacity utilized`,
+            gradient: "from-blue-500 to-blue-700",
+            icon: <FaClipboardList size={30} />,
           },
           {
             label: "Categories",
             value: categories,
-            percentage: (categories / 10) * 60,
-            gradient: "bg-gradient-to-r from-green-500 to-green-700",
-            icon: <FaStar size={35} />,
+            percentage: (categories / 10) * 60, // Scale to 60%
+            percentageDescription: `${((categories / 10) * 60).toFixed(
+              1
+            )}% of categories covered`,
+            gradient: "from-green-500 to-green-700",
+            icon: <FaStar size={30} />,
           },
           {
             label: "Rooms",
             value: rooms,
-            percentage: (rooms / 50) * 90,
-            gradient: "bg-gradient-to-r from-yellow-500 to-yellow-700",
-            icon: <FaHotel size={35} />,
+            percentage: (rooms / 50) * 90, // Scale to 90%
+            percentageDescription: `${((rooms / 50) * 90).toFixed(
+              1
+            )}% of room capacity filled`,
+            gradient: "from-yellow-500 to-yellow-700",
+            icon: <FaHotel size={30} />,
           },
           {
             label: "Users",
             value: users,
-            percentage: (users / 300) * 85,
-            gradient: "bg-gradient-to-r from-red-500 to-red-700",
-            icon: <FaUsers size={35} />,
+            percentage: (users / 300) * 85, // Scale to 85%
+            percentageDescription: `${((users / 300) * 85).toFixed(
+              1
+            )}% user growth achieved`,
+            gradient: "from-red-500 to-red-700",
+            icon: <FaUsers size={30} />,
           },
           {
             label: "Feedback",
             value: feedback,
-            percentage: (feedback / 50) * 50,
-            gradient: "bg-gradient-to-r from-purple-500 to-purple-700",
-            icon: <FaCommentDots size={35} />,
+            percentage: (feedback / 50) * 50, // Scale to 50%
+            percentageDescription: `${((feedback / 50) * 50).toFixed(
+              1
+            )}% of expected feedback received`,
+            gradient: "from-purple-500 to-purple-700",
+            icon: <FaCommentDots size={30} />,
           },
           {
             label: "Gallery Items",
             value: galleryItems,
-            percentage: (galleryItems / 30) * 40,
-            gradient: "bg-gradient-to-r from-teal-500 to-teal-700",
-            icon: <FaImages size={35} />,
+            percentage: (galleryItems / 30) * 40, // Scale to 40%
+            percentageDescription: `${((galleryItems / 30) * 40).toFixed(
+              1
+            )}% of gallery capacity used`,
+            gradient: "from-teal-500 to-teal-700",
+            icon: <FaImages size={30} />,
           },
         ];
 
@@ -145,36 +163,57 @@ export default function Dashboard() {
   return (
     <div className="p-0 space-y-4">
       {/* Stats Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {isLoading
           ? Array.from({ length: 6 }).map((_, index) => (
               <div
                 key={index}
-                className="h-32 bg-gray-300 animate-pulse rounded-xl"
+                className="h-32 bg-gradient-to-br from-gray-300 to-gray-400 animate-pulse rounded-lg"
               ></div>
             ))
           : stats.map((stat, index) => (
               <div
                 key={index}
-                className={`relative flex flex-row items-center p-6 rounded-xl shadow-lg text-white ${stat.gradient} transition-transform transform hover:scale-105`}
+                className={`relative flex flex-row items-center p-5 rounded-lg shadow-xl bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 hover:shadow-2xl transition-transform transform hover:scale-105`}
               >
-                <div className="w-16 h-16 flex items-center justify-center bg-white text-black rounded-full shadow-lg mr-4">
+                {/* Icon */}
+                <div className="w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full shadow-lg mr-4">
                   {stat.icon}
                 </div>
+
+                {/* Value and Label */}
                 <div className="flex-1">
-                  <h3 className="text-3xl font-bold">{stat.value}</h3>
-                  <p className="text-lg font-medium">{stat.label}</p>
+                  <h3 className="text-2xl sm:text-3xl font-extrabold text-white drop-shadow-lg">
+                    {stat.value}
+                  </h3>
+                  <p className="text-sm sm:text-lg font-semibold text-gray-100 opacity-80">
+                    {stat.label}
+                  </p>
                 </div>
-                <div className="w-16 h-16">
+
+                {/* Progress Bar and Percentage Description */}
+                <div className="w-14 h-14 sm:w-16 sm:h-16 flex flex-1 items-center justify-center space-y-0">
+                  {/* Circular Progress Bar */}
                   <CircularProgressbar
                     value={stat.percentage}
                     text={`${stat.percentage.toFixed(0)}%`}
                     styles={buildStyles({
                       textColor: "#fff",
-                      pathColor: "#ffffff",
-                      trailColor: "rgba(255, 255, 255, 0.3)",
+                      pathColor:
+                        stat.percentage >= 75
+                          ? "#22c55e"
+                          : stat.percentage >= 50
+                          ? "#f59e0b"
+                          : "#ef4444", // Green, Yellow, Red based on percentage
+                      trailColor: "rgba(255, 255, 255, 0.2)", // Light trail
+                      strokeWidth: 12, // Thick progress path for better visual impact
                     })}
                   />
+
+                  {/* Percentage Description Text */}
+                  <p className="mt-2 ml-2 text-xs sm:text-sm font-bold text-white bg-opacity-80 rounded-lg p-2 text-center shadow-lg">
+                    {stat.percentageDescription}
+                  </p>
                 </div>
               </div>
             ))}
