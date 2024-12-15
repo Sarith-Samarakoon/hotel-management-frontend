@@ -16,6 +16,7 @@ import Footer from "../../../components/footer/footer";
 import Countdown from "./countdown";
 import ImageGallery from "./imagesGallery";
 import WhyChooseUs from "./whyChooseUsPage";
+import BookingSection from "./bookingSection";
 
 export default function HomePage() {
   const images = [
@@ -54,21 +55,42 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    // Fetch events from the backend
-    axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/api/events`)
-      .then((response) => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/events`
+        );
         const allEvents = response.data.events || [];
-        // Sort events by start date (ascending) and take the closest 3
-        const closestEvents = allEvents
-          .filter((event) => new Date(event.startDate) >= new Date()) // Only future events
-          .sort((a, b) => new Date(a.startDate) - new Date(b.startDate)) // Sort by start date
-          .slice(0, 3); // Take the top 3 closest events
+
+        // Filter out events that have already passed
+        const upcomingEvents = allEvents.filter(
+          (event) => new Date(event.endDate) >= new Date()
+        );
+
+        // Sort events by start date (ascending)
+        const sortedEvents = upcomingEvents.sort(
+          (a, b) => new Date(a.startDate) - new Date(b.startDate)
+        );
+
+        // Take the top 3 closest events
+        const closestEvents = sortedEvents.slice(0, 3);
+
         setEvents(closestEvents);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching events:", error.message);
-      });
+      }
+    };
+
+    fetchEvents();
+  }, []); // Trigger this effect once, on component mount
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // After 1 day, re-fetch the events to get the next ones
+      fetchEvents();
+    }, 86400000); // 86400000 ms = 24 hours
+
+    return () => clearInterval(interval); // Cleanup interval when component unmounts
   }, []);
 
   const nextSlide = () => {
@@ -130,38 +152,7 @@ export default function HomePage() {
         </button>
       </div>
       {/* Booking Section */}
-      <div className="bg-white shadow-lg py-8 px-4 md:px-10 -mt-20 relative z-10 rounded-lg mx-auto w-11/12 md:w-3/4">
-        <div className="flex flex-wrap justify-between items-center">
-          <input
-            type="text"
-            placeholder="Enter your email"
-            className="flex-1 border border-gray-300 p-2 rounded-md m-2"
-          />
-          <select
-            className="flex-1 border border-gray-300 p-2 rounded-md m-2"
-            defaultValue=""
-          >
-            <option value="" disabled>
-              Room Type
-            </option>
-            <option value="1">Luxury</option>
-            <option value="2">Double Room</option>
-            <option value="3">Triple Room</option>
-            <option value="4">Normal</option>
-          </select>
-          <input
-            type="date"
-            className="flex-1 border border-gray-300 p-2 rounded-md m-2"
-          />
-          <input
-            type="date"
-            className="flex-1 border border-gray-300 p-2 rounded-md m-2"
-          />
-          <button className="flex-1 bg-red-500 text-white py-2 px-4 rounded-md m-2 hover:bg-red-700">
-            Book Now
-          </button>
-        </div>
-      </div>
+      <BookingSection />
       {/* Live Count Section */}
       <div className="bg-gray-50 py-16 px-6">
         {/* Welcome Section */}
@@ -262,7 +253,10 @@ export default function HomePage() {
             >
               {/* Countdown */}
               <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white px-4 py-1 rounded-full text-xs font-semibold shadow-md z-10">
-                <Countdown startDate={event.startDate} />
+                <Countdown
+                  startDate={event.startDate}
+                  endDate={event.endDate}
+                />
               </div>
 
               {/* Event Image */}
