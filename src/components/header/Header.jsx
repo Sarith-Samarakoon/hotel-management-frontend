@@ -118,7 +118,7 @@ function Header() {
                 <li key={index}>
                   <button
                     onClick={() => navigateTo(item.path)}
-                    className="hover:text-[#FFD700] block w-full text-left hover:bg-[#1A73E8] rounded-md px-4 py-2 flex items-center space-x-3 transition duration-300"
+                    className="hover:text-[#FFD700]  w-full text-left hover:bg-[#1A73E8] rounded-md px-4 py-2 flex items-center space-x-3 transition duration-300"
                   >
                     {item.icon}
                     <span className="hover:text-[#FFD700]">{item.label}</span>
