@@ -84,6 +84,9 @@ function InquiryPage() {
             inquiryType: "",
             message: "",
           });
+
+          // Reload the page after submission
+          window.location.reload();
         })
         .catch((error) => {
           console.error("Error submitting inquiry:", error);
@@ -101,29 +104,39 @@ function InquiryPage() {
 
   const faqs = [
     {
-      question: "How can I update my inquiry after submitting it?",
+      question: "How do I make a reservation for a room?",
       answer:
-        "Currently, you cannot edit an inquiry after submission. Please contact our support team for updates.",
+        "To make a reservation, please visit our 'Room Reservation' section or contact us directly for availability and special offers. You can also use our website's booking form to check for available rooms.",
     },
     {
-      question: "What is the typical response time for inquiries?",
+      question: "Can I request additional services or amenities?",
       answer:
-        "We aim to respond to all inquiries within 24-48 hours, depending on the nature of the inquiry.",
+        "Yes, we offer additional services such as room upgrades, special dietary needs, or transportation requests. Simply mention your requirements when submitting an inquiry or contact our front desk directly.",
     },
     {
-      question: "Can I cancel my inquiry?",
+      question: "What should I do if I face issues with payment?",
       answer:
-        "Yes, you can cancel your inquiry by contacting our support team with your inquiry ID.",
+        "If you're facing any issues with payments, please contact our support team immediately with your payment details. We will assist you in resolving any payment-related concerns.",
     },
     {
-      question: "What information is required to submit an inquiry?",
+      question: "How can I provide feedback or file a complaint?",
       answer:
-        "You need to provide your full name, contact details, the type of inquiry, and a detailed message describing your concern.",
+        "We value your feedback and aim to continuously improve our services. If you have any complaints or suggestions, please submit an inquiry under the 'Complaints/Feedback' section, and our team will address it promptly.",
     },
     {
-      question: "Do I need an account to submit an inquiry?",
+      question: "How do I check the status of my inquiry?",
       answer:
-        "Yes, you need to log in to your account to submit and view inquiries.",
+        "You can check the status of your inquiry directly on your dashboard after logging in. If you have any questions about its status, feel free to reach out to our support team for updates.",
+    },
+    {
+      question: "Can I cancel my reservation or inquiry?",
+      answer:
+        "Yes, cancellations are possible. If you need to cancel your reservation or inquiry, please contact our support team as soon as possible. Cancellation policies apply based on the type of reservation or inquiry.",
+    },
+    {
+      question: "What documents do I need to submit for a room reservation?",
+      answer:
+        "For a room reservation, you will need to provide a valid ID, credit card information for booking confirmation, and any special requests or requirements you may have for your stay.",
     },
   ];
 
@@ -241,10 +254,16 @@ function InquiryPage() {
                   required
                 >
                   <option value="">Select an inquiry type</option>
+                  <option value="Room Reservation">Room Reservation</option>
                   <option value="Booking">Booking Inquiry</option>
                   <option value="Event">Event Inquiry</option>
                   <option value="Room Details">Room Details</option>
                   <option value="General">General Inquiry</option>
+                  <option value="Special Requests">Special Requests</option>
+                  <option value="Payment Issues">Payment Issues</option>
+                  <option value="Complaints/Feedback">
+                    Complaints/Feedback
+                  </option>
                 </select>
               </div>
               {/* Message Field */}

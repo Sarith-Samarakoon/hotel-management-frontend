@@ -17,6 +17,9 @@ export default function BookingForm({ room, onClose }) {
     window.location.href = "/login";
   }
 
+  // Get current date in YYYY-MM-DD format
+  const currentDate = new Date().toISOString().split("T")[0];
+
   const handleBookingSubmit = (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -66,6 +69,7 @@ export default function BookingForm({ room, onClose }) {
             type="date"
             value={start}
             onChange={(e) => setStart(e.target.value)}
+            min={currentDate} // Set minimum date to current date
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             required
           />
@@ -80,6 +84,7 @@ export default function BookingForm({ room, onClose }) {
             type="date"
             value={end}
             onChange={(e) => setEnd(e.target.value)}
+            min={currentDate} // Set minimum date to current date
             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
             required
           />
