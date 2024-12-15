@@ -28,6 +28,9 @@ export default function UpdateEventForm() {
     window.location.href = "/login";
   }
 
+  // Get today's date in YYYY-MM-DD format for validation
+  const today = new Date().toISOString().split("T")[0];
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -151,6 +154,7 @@ export default function UpdateEventForm() {
                 onChange={(e) => setStartDate(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
+                min={today} // Disable past dates
               />
             </div>
           </div>
@@ -166,6 +170,7 @@ export default function UpdateEventForm() {
                 onChange={(e) => setEndDate(e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
+                min={today} // Disable past dates
               />
             </div>
 

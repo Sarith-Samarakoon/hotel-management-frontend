@@ -1,3 +1,5 @@
+// AdminBookings.js (Frontend)
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -12,6 +14,8 @@ export default function AdminBookings() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const itemsPerPage = 10; // Items per page
 
   const token = localStorage.getItem("token");
@@ -48,6 +52,32 @@ export default function AdminBookings() {
         );
       })
       .finally(() => setLoading(false));
+  };
+
+  const handleFilter = () => {
+    if (startDate && endDate) {
+      setLoading(true);
+      axios
+        .post(
+          `${import.meta.env.VITE_BACKEND_URL}/api/bookings/filter-date`,
+          { start: startDate, end: endDate },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          setBookings(response.data.result);
+        })
+        .catch((error) => {
+          console.error("Error filtering bookings:", error);
+          toast.error("Failed to filter bookings.");
+        })
+        .finally(() => setLoading(false));
+    } else {
+      toast.error("Please select both start and end dates.");
+    }
   };
 
   const deleteBooking = (bookingId) => {
@@ -89,6 +119,49 @@ export default function AdminBookings() {
       <h1 className="text-4xl font-extrabold mb-8 tracking-wide leading-snug shadow-lg bg-gradient-to-r from-gray-700 via-gray-900 to-black text-white px-8 py-4 rounded-full w-[480px]">
         Bookings
       </h1>
+
+      {/* Filter Dates */}
+      <div className="mb-8 flex items-center justify-center space-x-6 bg-gradient-to-r from-blue-500 to-teal-500 p-6 rounded-xl shadow-lg">
+        <div className="flex flex-col space-y-2">
+          <label
+            htmlFor="startDate"
+            className="text-lg font-medium text-gray-900"
+          >
+            Start Date
+          </label>
+          <input
+            id="startDate"
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="p-3 border-2 border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition ease-in-out duration-300"
+          />
+        </div>
+
+        <div className="flex flex-col space-y-2">
+          <label
+            htmlFor="endDate"
+            className="text-lg font-medium text-gray-900"
+          >
+            End Date
+          </label>
+          <input
+            id="endDate"
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="p-3 border-2 border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition ease-in-out duration-300"
+          />
+        </div>
+
+        <button
+          onClick={handleFilter}
+          className="mt-10 bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-white py-3 px-6 rounded-lg shadow-lg hover:from-indigo-600 hover:via-purple-700 hover:to-pink-600 focus:outline-none focus:ring-4 focus:ring-indigo-400 transform hover:scale-105 transition ease-in-out duration-300"
+        >
+          Filter
+        </button>
+      </div>
+
       {loading ? (
         <p>Loading bookings...</p>
       ) : bookings.length === 0 ? (
@@ -114,31 +187,31 @@ export default function AdminBookings() {
             <tbody>
               {bookings.map((booking) => (
                 <tr key={booking.bookingId} className="hover:bg-gray-100">
-                  <td className="px-4 py-2  text-gray-700">
+                  <td className="px-4 py-2 text-gray-700">
                     {booking.bookingId}
                   </td>
-                  <td className="px-4 py-2  text-gray-700">{booking.roomId}</td>
-                  <td className="px-4 py-2  text-gray-700">{booking.email}</td>
-                  <td className="px-4 py-2  text-gray-700">
+                  <td className="px-4 py-2 text-gray-700">{booking.roomId}</td>
+                  <td className="px-4 py-2 text-gray-700">{booking.email}</td>
+                  <td className="px-4 py-2 text-gray-700">
                     {new Date(booking.start).toLocaleDateString()}
                   </td>
-                  <td className="px-4 py-2  text-gray-700">
+                  <td className="px-4 py-2 text-gray-700">
                     {new Date(booking.end).toLocaleDateString()}
                   </td>
-                  <td className="px-4 py-2  text-gray-700">{booking.guests}</td>
-                  <td className="px-4 py-2  text-gray-700">
+                  <td className="px-4 py-2 text-gray-700">{booking.guests}</td>
+                  <td className="px-4 py-2 text-gray-700">
                     {booking.notes || "-"}
                   </td>
-                  <td className="px-4 py-2  text-gray-700">
+                  <td className="px-4 py-2 text-gray-700">
                     {new Date(booking.timesStamp).toLocaleString()}
                   </td>
-                  <td className="px-4 py-2  text-gray-700">
+                  <td className="px-4 py-2 text-gray-700">
                     {booking.status || "Pending"}
                   </td>
-                  <td className="px-4 py-2  text-gray-700">
+                  <td className="px-4 py-2 text-gray-700">
                     {booking.reason || "-"}
                   </td>
-                  <td className="px-4 py-2  text-gray-700 flex space-x-2">
+                  <td className="px-4 py-2 text-gray-700 flex space-x-2">
                     <button
                       onClick={() => deleteBooking(booking.bookingId)}
                       className="bg-red-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 flex items-center"
